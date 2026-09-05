@@ -42,9 +42,9 @@ export class UserManagement implements OnInit {
     const hasRole = user.roles.includes(role);
     const roles = hasRole ? user.roles.filter((r) => r !== role) : [...user.roles, role];
     this.userAdminService.updateRoles(user.id, roles).subscribe({
-      next: () => {
+      next: (updated) => {
+        this.users.update((current) => current.map((u) => (u.id === updated.id ? updated : u)));
         this.notifications.success(`Updated roles for ${user.username}.`);
-        this.load();
       },
       error: () => {
         /* user-facing notification is shown by the global error interceptor */

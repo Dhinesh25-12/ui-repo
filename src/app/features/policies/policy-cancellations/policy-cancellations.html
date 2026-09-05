@@ -13,7 +13,7 @@
       <tr *ngFor="let policy of requests()">
         <td>{{ policy.policyNumber }}</td>
         <td>{{ policy.productName }}</td>
-        <td>{{ policy.customerId }}</td>
+        <td>{{ policy.customerName || ('Customer #' + policy.customerId) }}</td>
         <td>{{ policy.status }}</td>
         <td class="actions">
           <button (click)="approve(policy.id)">Approve</button>

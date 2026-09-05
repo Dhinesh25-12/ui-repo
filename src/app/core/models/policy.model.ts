@@ -13,6 +13,7 @@ export interface Policy {
   productId: number;
   productName?: string;
   customerId: number;
+  customerName?: string;
   startDate: string;
   endDate: string;
   premiumAmount: number;
