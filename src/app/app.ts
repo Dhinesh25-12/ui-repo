@@ -1,12 +1,14 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
+import { NotificationService } from './core/services/notification.service';
 
 @Component({
-  imports: [RouterOutlet],
+  imports: [CommonModule, RouterOutlet],
   selector: 'app-root',
   styleUrl: './app.scss',
   templateUrl: './app.html',
 })
 export class App {
-  protected readonly title = signal('insurance-portal');
+  constructor(readonly notifications: NotificationService) {}
 }

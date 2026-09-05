@@ -1,0 +1,39 @@
+<div class="product-compare">
+  <a routerLink="/products" class="back-link">&larr; Back to products</a>
+  <h1>Compare Products</h1>
+
+  <app-loading-spinner *ngIf="loading()"></app-loading-spinner>
+
+  <app-empty-state
+    *ngIf="!loading() && products().length === 0"
+    icon="🔍"
+    title="Select two or more products to compare"
+  ></app-empty-state>
+
+  <table class="compare-table" *ngIf="!loading() && products().length">
+    <thead>
+      <tr>
+        <th>Field</th>
+        <th *ngFor="let p of products()">{{ p.name }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Category</td>
+        <td *ngFor="let p of products()">{{ p.category }}</td>
+      </tr>
+      <tr>
+        <td>Coverage amount</td>
+        <td *ngFor="let p of products()">₹{{ p.coverageAmount }}</td>
+      </tr>
+      <tr>
+        <td>Premium amount</td>
+        <td *ngFor="let p of products()">₹{{ p.premiumAmount }}</td>
+      </tr>
+      <tr>
+        <td>Tenure</td>
+        <td *ngFor="let p of products()">{{ p.tenureMonths }} months</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

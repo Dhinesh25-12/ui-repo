@@ -1,0 +1,48 @@
+<div class="policy-purchase">
+  <a routerLink="/policies" class="back-link">&larr; Back to policies</a>
+  <h1>Purchase Policy</h1>
+
+  <div class="confirmation card" *ngIf="confirmedPolicy() as policy">
+    <h2>✅ Application Submitted</h2>
+    <p>Your policy has been created successfully.</p>
+    <dl>
+      <dt>Policy number</dt><dd>{{ policy.policyNumber }}</dd>
+      <dt>Start date</dt><dd>{{ policy.startDate }}</dd>
+      <dt>End date</dt><dd>{{ policy.endDate }}</dd>
+    </dl>
+    <a routerLink="/policies" class="primary-btn">Go to my policies</a>
+  </div>
+
+  <ng-container *ngIf="!confirmedPolicy()">
+    <app-loading-spinner *ngIf="loadingProducts()"></app-loading-spinner>
+
+    <form class="card" [formGroup]="form" (ngSubmit)="submit()" *ngIf="!loadingProducts()">
+      <label>Select product</label>
+      <select formControlName="productId">
+        <option [value]="0" disabled>Choose a product</option>
+        <option *ngFor="let product of products()" [value]="product.id">
+          {{ product.name }} (₹{{ product.premiumAmount }}/{{ product.tenureMonths }}mo)
+        </option>
+      </select>
+
+      <div formGroupName="nominee" class="nominee-fields">
+        <h3>Nominee details</h3>
+        <label>Nominee name</label>
+        <input type="text" formControlName="name" />
+
+        <label>Relationship</label>
+        <input type="text" formControlName="relationship" />
+
+        <label>Date of birth</label>
+        <input type="date" formControlName="dateOfBirth" />
+
+        <label>Contact number (optional)</label>
+        <input type="tel" formControlName="contactNumber" />
+      </div>
+
+      <button type="submit" [disabled]="submitting()">
+        {{ submitting() ? 'Submitting...' : 'Submit application' }}
+      </button>
+    </form>
+  </ng-container>
+</div>

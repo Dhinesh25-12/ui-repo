@@ -1,0 +1,26 @@
+<div class="claims-queue">
+  <h1>Claims Queue</h1>
+
+  <app-loading-spinner *ngIf="loading()"></app-loading-spinner>
+  <app-empty-state *ngIf="!loading() && claims().length === 0" icon="✅" title="No claims to review"></app-empty-state>
+
+  <table class="queue-table" *ngIf="!loading() && claims().length">
+    <thead>
+      <tr><th>Claim #</th><th>Policy #</th><th>Incident date</th><th>Status</th><th>Update status</th></tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let claim of claims()">
+        <td>{{ claim.claimNumber }}</td>
+        <td>{{ claim.policyNumber }}</td>
+        <td>{{ claim.incidentDate }}</td>
+        <td><app-status-badge [status]="claim.status"></app-status-badge></td>
+        <td>
+          <select (change)="updateStatus(claim, $any($event.target).value)">
+            <option value="" disabled selected>Change status</option>
+            <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
+          </select>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

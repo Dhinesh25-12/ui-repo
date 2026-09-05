@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal , inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -13,6 +13,7 @@ import { NotificationService } from '../../../core/services/notification.service
   styleUrl: './register.scss'
 })
 export class Register {
+  private readonly fb = inject(FormBuilder);
   readonly loading = signal(false);
 
   readonly form = this.fb.nonNullable.group({
@@ -24,7 +25,6 @@ export class Register {
   });
 
   constructor(
-    private readonly fb: FormBuilder,
     private readonly authService: AuthService,
     private readonly router: Router,
     private readonly notifications: NotificationService

@@ -1,0 +1,29 @@
+<div class="user-management">
+  <h1>User Management</h1>
+
+  <app-loading-spinner *ngIf="loading()"></app-loading-spinner>
+  <app-empty-state *ngIf="!loading() && users().length === 0" icon="👥" title="No users found"></app-empty-state>
+
+  <table class="user-table" *ngIf="!loading() && users().length">
+    <thead>
+      <tr><th>Username</th><th>Full name</th><th>Email</th><th>Roles</th></tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users()">
+        <td>{{ user.username }}</td>
+        <td>{{ user.fullName }}</td>
+        <td>{{ user.email }}</td>
+        <td>
+          <label class="role-check" *ngFor="let role of allRoles">
+            <input
+              type="checkbox"
+              [checked]="user.roles.includes(role)"
+              (change)="toggleRole(user, role)"
+            />
+            {{ role }}
+          </label>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

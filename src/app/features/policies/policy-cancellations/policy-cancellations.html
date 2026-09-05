@@ -1,0 +1,25 @@
+<div class="policy-cancellations">
+  <a routerLink="/policies" class="back-link">&larr; Back to policies</a>
+  <h1>Pending Cancellation Requests</h1>
+
+  <app-loading-spinner *ngIf="loading()"></app-loading-spinner>
+  <app-empty-state *ngIf="!loading() && requests().length === 0" icon="✅" title="No pending requests"></app-empty-state>
+
+  <table class="cancel-table" *ngIf="!loading() && requests().length">
+    <thead>
+      <tr><th>Policy #</th><th>Product</th><th>Customer</th><th>Status</th><th></th></tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let policy of requests()">
+        <td>{{ policy.policyNumber }}</td>
+        <td>{{ policy.productName }}</td>
+        <td>{{ policy.customerId }}</td>
+        <td>{{ policy.status }}</td>
+        <td class="actions">
+          <button (click)="approve(policy.id)">Approve</button>
+          <button class="danger" (click)="reject(policy.id)">Reject</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

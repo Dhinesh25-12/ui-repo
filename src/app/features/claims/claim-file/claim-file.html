@@ -1,0 +1,35 @@
+<div class="claim-file">
+  <a routerLink="/claims" class="back-link">&larr; Back to claims</a>
+  <h1>File a Claim</h1>
+
+  <form class="card" [formGroup]="form" (ngSubmit)="submit()">
+    <label>Claim number</label>
+    <input type="text" value="Auto-generated on submission" disabled />
+
+    <label>Policy</label>
+    <select formControlName="policyId">
+      <option [value]="0" disabled>Select a policy</option>
+      <option *ngFor="let policy of policies()" [value]="policy.id">{{ policy.policyNumber }}</option>
+    </select>
+
+    <label>Incident date</label>
+    <input type="date" formControlName="incidentDate" />
+
+    <label>Description</label>
+    <textarea rows="4" formControlName="description" placeholder="Describe what happened..."></textarea>
+    <p class="error" *ngIf="form.get('description')?.touched && form.get('description')?.invalid">
+      Please provide at least 10 characters.
+    </p>
+
+    <label>Supporting documents</label>
+    <input type="file" multiple (change)="onFilesSelected($event)" />
+    <ul class="doc-list" *ngIf="documents().length">
+      <li *ngFor="let doc of documents()">{{ doc.fileName }}</li>
+    </ul>
+    <p class="hint">Only document metadata is recorded; actual file storage depends on backend support.</p>
+
+    <button type="submit" [disabled]="submitting()">
+      {{ submitting() ? 'Submitting...' : 'Submit claim' }}
+    </button>
+  </form>
+</div>

@@ -1,0 +1,31 @@
+<div class="product-admin">
+  <a routerLink="/products" class="back-link">&larr; Back to products</a>
+  <h1>{{ isEdit() ? 'Edit Product' : 'New Product' }}</h1>
+
+  <form class="card" [formGroup]="form" (ngSubmit)="submit()">
+    <label>Product name</label>
+    <input type="text" formControlName="name" />
+
+    <label>Category</label>
+    <select formControlName="category">
+      <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+    </select>
+
+    <label>Coverage amount</label>
+    <input type="number" formControlName="coverageAmount" />
+
+    <label>Premium amount</label>
+    <input type="number" formControlName="premiumAmount" />
+
+    <label>Policy tenure (months)</label>
+    <input type="number" formControlName="tenureMonths" />
+
+    <label>Description</label>
+    <textarea formControlName="description" rows="3"></textarea>
+
+    <div class="actions">
+      <button type="submit" [disabled]="saving()">{{ saving() ? 'Saving...' : 'Save' }}</button>
+      <button type="button" class="danger" *ngIf="isEdit()" (click)="deleteProduct()">Delete</button>
+    </div>
+  </form>
+</div>

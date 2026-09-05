@@ -1,0 +1,37 @@
+<div class="policy-list">
+  <div class="header-row">
+    <h1>Policies</h1>
+    <a *ngIf="auth.hasRole('CUSTOMER')" routerLink="/policies/purchase" class="primary-btn">+ Purchase Policy</a>
+    <a *ngIf="auth.hasAnyRole(['ADMIN'])" routerLink="/policies/cancellations" class="secondary-btn">
+      Cancellation Requests
+    </a>
+  </div>
+
+  <app-loading-spinner *ngIf="loading()"></app-loading-spinner>
+  <app-empty-state *ngIf="!loading() && policies().length === 0" icon="📄" title="No policies found"></app-empty-state>
+
+  <table class="policy-table" *ngIf="!loading() && policies().length">
+    <thead>
+      <tr>
+        <th>Policy #</th>
+        <th>Product</th>
+        <th>Start</th>
+        <th>End</th>
+        <th>Premium</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let policy of policies()">
+        <td>{{ policy.policyNumber }}</td>
+        <td>{{ policy.productName }}</td>
+        <td>{{ policy.startDate }}</td>
+        <td>{{ policy.endDate }}</td>
+        <td>₹{{ policy.premiumAmount }}</td>
+        <td><app-status-badge [status]="policy.status"></app-status-badge></td>
+        <td><a [routerLink]="['/policies', policy.id]">View</a></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

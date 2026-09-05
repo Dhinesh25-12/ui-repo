@@ -1,0 +1,33 @@
+<div class="claims-history">
+  <div class="header-row">
+    <h1>My Claims</h1>
+    <a routerLink="/claims/new" class="primary-btn">+ File a Claim</a>
+  </div>
+
+  <app-loading-spinner *ngIf="loading()"></app-loading-spinner>
+  <app-empty-state *ngIf="!loading() && claims().length === 0" icon="🧾" title="No claims filed yet"></app-empty-state>
+
+  <div class="claim-card" *ngFor="let claim of claims()">
+    <div class="claim-header">
+      <div>
+        <h3>{{ claim.claimNumber }}</h3>
+        <p class="policy-ref">Policy: {{ claim.policyNumber }}</p>
+      </div>
+      <app-status-badge [status]="claim.status"></app-status-badge>
+    </div>
+    <p class="description">{{ claim.description }}</p>
+    <p class="incident-date">Incident date: {{ claim.incidentDate }}</p>
+
+    <div class="tracker" *ngIf="claim.status !== 'REJECTED'">
+      <div
+        class="tracker-step"
+        *ngFor="let step of steps; let i = index"
+        [class.completed]="i <= stepIndex(claim)"
+      >
+        <span class="dot"></span>
+        <span class="step-label">{{ step }}</span>
+      </div>
+    </div>
+    <p class="rejected-note" *ngIf="claim.status === 'REJECTED'">This claim was rejected.</p>
+  </div>
+</div>
