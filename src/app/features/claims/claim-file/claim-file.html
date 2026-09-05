@@ -8,8 +8,8 @@
 
     <label>Policy</label>
     <select formControlName="policyId">
-      <option [value]="0" disabled>Select a policy</option>
-      <option *ngFor="let policy of policies()" [value]="policy.id">{{ policy.policyNumber }}</option>
+      <option [ngValue]="0" disabled>Select a policy</option>
+      <option *ngFor="let policy of policies()" [ngValue]="policy.id">{{ policy.policyNumber }}</option>
     </select>
 
     <label>Incident date</label>

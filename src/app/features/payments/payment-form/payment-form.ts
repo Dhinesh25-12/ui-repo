@@ -41,8 +41,9 @@ export class PaymentForm implements OnInit {
     });
   }
 
-  onPolicyChange(policyId: string): void {
-    const policy = this.policies().find((p) => p.id === Number(policyId));
+  onPolicyChange(): void {
+    const policyId = this.form.controls.policyId.value;
+    const policy = this.policies().find((p) => p.id === policyId);
     if (policy) {
       this.form.patchValue({ amount: policy.premiumAmount });
     }

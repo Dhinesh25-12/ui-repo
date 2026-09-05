@@ -19,8 +19,8 @@
     <form class="card" [formGroup]="form" (ngSubmit)="submit()" *ngIf="!loadingProducts()">
       <label>Select product</label>
       <select formControlName="productId">
-        <option [value]="0" disabled>Choose a product</option>
-        <option *ngFor="let product of products()" [value]="product.id">
+        <option [ngValue]="0" disabled>Choose a product</option>
+        <option *ngFor="let product of products()" [ngValue]="product.id">
           {{ product.name }} (₹{{ product.premiumAmount }}/{{ product.tenureMonths }}mo)
         </option>
       </select>

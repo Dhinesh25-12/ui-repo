@@ -4,9 +4,9 @@
 
   <form class="card" [formGroup]="form" (ngSubmit)="submit()">
     <label>Policy</label>
-    <select formControlName="policyId" (change)="onPolicyChange($any($event.target).value)">
-      <option [value]="0" disabled>Select a policy</option>
-      <option *ngFor="let policy of policies()" [value]="policy.id">{{ policy.policyNumber }}</option>
+    <select formControlName="policyId" (change)="onPolicyChange()">
+      <option [ngValue]="0" disabled>Select a policy</option>
+      <option *ngFor="let policy of policies()" [ngValue]="policy.id">{{ policy.policyNumber }}</option>
     </select>
 
     <label>Amount</label>
