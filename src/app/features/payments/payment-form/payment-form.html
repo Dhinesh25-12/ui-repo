@@ -1,0 +1,26 @@
+<div class="payment-form">
+  <a routerLink="/payments" class="back-link">&larr; Back to payments</a>
+  <h1>Pay Premium</h1>
+
+  <form class="card" [formGroup]="form" (ngSubmit)="submit()">
+    <label>Policy</label>
+    <select formControlName="policyId" (change)="onPolicyChange()">
+      <option [ngValue]="0" disabled>Select a policy</option>
+      <option *ngFor="let policy of policies()" [ngValue]="policy.id">{{ policy.policyNumber }}</option>
+    </select>
+
+    <label>Amount</label>
+    <input type="number" formControlName="amount" />
+
+    <label>Payment method</label>
+    <select formControlName="paymentMethod">
+      <option value="CARD">Card</option>
+      <option value="NET_BANKING">Net Banking</option>
+      <option value="UPI">UPI</option>
+    </select>
+
+    <button type="submit" [disabled]="submitting()">
+      {{ submitting() ? 'Processing...' : 'Pay now' }}
+    </button>
+  </form>
+</div>

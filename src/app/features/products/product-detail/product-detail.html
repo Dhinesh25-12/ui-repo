@@ -1,0 +1,23 @@
+<div class="product-detail">
+  <a routerLink="/products" class="back-link">&larr; Back to products</a>
+  <app-loading-spinner *ngIf="loading()"></app-loading-spinner>
+
+  <div class="card" *ngIf="!loading() && product() as p">
+    <h1>{{ p.name }}</h1>
+    <p class="category">{{ p.category }}</p>
+    <p>{{ p.description || 'No description provided.' }}</p>
+
+    <dl>
+      <dt>Coverage amount</dt>
+      <dd>₹{{ p.coverageAmount }}</dd>
+      <dt>Premium amount</dt>
+      <dd>₹{{ p.premiumAmount }}</dd>
+      <dt>Policy tenure</dt>
+      <dd>{{ p.tenureMonths }} months</dd>
+    </dl>
+
+    <a [routerLink]="['/policies/purchase']" [queryParams]="{ productId: p.id }" class="primary-btn">
+      Purchase this policy
+    </a>
+  </div>
+</div>

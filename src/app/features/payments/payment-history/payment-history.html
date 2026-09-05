@@ -1,0 +1,41 @@
+<div class="payment-history">
+  <div class="header-row">
+    <h1>Payment History</h1>
+    <a routerLink="/payments/pay" class="primary-btn">+ Pay Premium</a>
+  </div>
+
+  <div class="filters">
+    <select [(ngModel)]="statusFilter">
+      <option value="">All statuses</option>
+      <option value="SUCCESS">Success</option>
+      <option value="PENDING">Pending</option>
+      <option value="FAILED">Failed</option>
+    </select>
+  </div>
+
+  <app-loading-spinner *ngIf="loading()"></app-loading-spinner>
+  <app-empty-state *ngIf="!loading() && filteredPayments().length === 0" icon="💳" title="No payments found"></app-empty-state>
+
+  <table class="payment-table" *ngIf="!loading() && filteredPayments().length">
+    <thead>
+      <tr>
+        <th>Policy #</th>
+        <th (click)="setSort('paymentDate')" class="sortable">Date</th>
+        <th (click)="setSort('amount')" class="sortable">Amount</th>
+        <th>Status</th>
+        <th>Invoice</th>
+        <th>Receipt</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let payment of filteredPayments()">
+        <td>{{ payment.policyNumber }}</td>
+        <td>{{ payment.paymentDate }}</td>
+        <td>₹{{ payment.amount }}</td>
+        <td><app-status-badge [status]="payment.status"></app-status-badge></td>
+        <td><a [href]="invoiceUrl(payment.id)" target="_blank">View invoice</a></td>
+        <td><a [href]="receiptUrl(payment.id)" target="_blank">Download receipt</a></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

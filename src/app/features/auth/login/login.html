@@ -1,0 +1,26 @@
+<div class="auth-page">
+  <form class="auth-card" [formGroup]="form" (ngSubmit)="submit()">
+    <h1>Sign in</h1>
+    <p class="subtitle">Insurance Policy Management Portal</p>
+
+    <label for="username">Username</label>
+    <input id="username" type="text" formControlName="username" autocomplete="username" />
+    <p class="error" *ngIf="form.get('username')?.touched && form.get('username')?.invalid">
+      Username is required.
+    </p>
+
+    <label for="password">Password</label>
+    <input id="password" type="password" formControlName="password" autocomplete="current-password" />
+    <p class="error" *ngIf="form.get('password')?.touched && form.get('password')?.invalid">
+      Password must be at least 4 characters.
+    </p>
+
+    <button type="submit" [disabled]="loading()">
+      {{ loading() ? 'Signing in...' : 'Sign in' }}
+    </button>
+
+    <p class="switch">
+      Don't have an account? <a routerLink="/auth/register">Register</a>
+    </p>
+  </form>
+</div>

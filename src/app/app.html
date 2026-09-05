@@ -1,0 +1,11 @@
+<router-outlet></router-outlet>
+
+<div class="toast-container">
+  <div
+    class="toast"
+    *ngFor="let toast of notifications.toasts()"
+    [class]="'toast-' + toast.type"
+  >
+    {{ toast.message }}
+  </div>
+</div>

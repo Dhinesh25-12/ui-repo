@@ -1,0 +1,10 @@
+<div class="customer-reports">
+  <h1>My Reports</h1>
+  <app-loading-spinner *ngIf="loading()"></app-loading-spinner>
+
+  <div class="kpi-grid" *ngIf="!loading() && summary() as data">
+    <app-kpi-card label="Active Policies" [value]="data.activePolicies" icon="✅" accent="green"></app-kpi-card>
+    <app-kpi-card label="Expired Policies" [value]="data.expiredPolicies" icon="⌛" accent="orange"></app-kpi-card>
+    <app-kpi-card label="Claims Submitted" [value]="data.claimsSubmitted" icon="🧾" accent="blue"></app-kpi-card>
+  </div>
+</div>
