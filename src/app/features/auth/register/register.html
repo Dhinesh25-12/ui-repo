@@ -1,0 +1,32 @@
+<div class="auth-page">
+  <form class="auth-card" [formGroup]="form" (ngSubmit)="submit()">
+    <h1>Create account</h1>
+    <p class="subtitle">Register to manage your insurance policies</p>
+
+    <label for="fullName">Full name</label>
+    <input id="fullName" type="text" formControlName="fullName" />
+
+    <label for="username">Username</label>
+    <input id="username" type="text" formControlName="username" />
+
+    <label for="email">Email</label>
+    <input id="email" type="email" formControlName="email" />
+
+    <label for="phone">Phone (optional)</label>
+    <input id="phone" type="tel" formControlName="phone" />
+
+    <label for="password">Password</label>
+    <input id="password" type="password" formControlName="password" />
+    <p class="error" *ngIf="form.get('password')?.touched && form.get('password')?.invalid">
+      Password must be at least 6 characters.
+    </p>
+
+    <button type="submit" [disabled]="loading()">
+      {{ loading() ? 'Creating account...' : 'Register' }}
+    </button>
+
+    <p class="switch">
+      Already have an account? <a routerLink="/auth/login">Sign in</a>
+    </p>
+  </form>
+</div>
