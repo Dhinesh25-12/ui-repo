@@ -10,6 +10,7 @@ import {
   TopCustomerReport
 } from '../../../core/models/report.model';
 import { LoadingSpinner } from '../../../shared/components/loading-spinner/loading-spinner';
+import { maxOrOne } from '../../../shared/utils/chart.util';
 
 @Component({
   selector: 'app-admin-reports',
@@ -49,6 +50,6 @@ export class AdminReports implements OnInit {
   }
 
   maxRevenue(): number {
-    return Math.max(1, ...this.monthlyRevenue().map((p) => p.revenue));
+    return maxOrOne(this.monthlyRevenue().map((p) => p.revenue));
   }
 }

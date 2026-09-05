@@ -74,9 +74,14 @@ export class ProductAdmin implements OnInit {
     if (!this.productId) return;
     if (!confirm('Are you sure you want to delete this product?')) return;
 
-    this.productService.delete(this.productId).subscribe(() => {
-      this.notifications.success('Product deleted.');
-      this.router.navigate(['/products']);
+    this.productService.delete(this.productId).subscribe({
+      next: () => {
+        this.notifications.success('Product deleted.');
+        this.router.navigate(['/products']);
+      },
+      error: () => {
+        /* user-facing notification is shown by the global error interceptor */
+      }
     });
   }
 }

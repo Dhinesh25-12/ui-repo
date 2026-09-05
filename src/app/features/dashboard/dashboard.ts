@@ -5,6 +5,7 @@ import { LoadingSpinner } from '../../shared/components/loading-spinner/loading-
 import { EmptyState } from '../../shared/components/empty-state/empty-state';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { DashboardSummary } from '../../core/models/dashboard.model';
+import { maxOrOne } from '../../shared/utils/chart.util';
 
 @Component({
   selector: 'app-dashboard',
@@ -35,11 +36,11 @@ export class Dashboard implements OnInit {
 
   maxRevenue(): number {
     const trend = this.summary()?.revenueTrend ?? [];
-    return Math.max(1, ...trend.map((p) => p.revenue));
+    return maxOrOne(trend.map((p) => p.revenue));
   }
 
   maxSplit(): number {
     const split = this.summary()?.policySplit ?? [];
-    return Math.max(1, ...split.map((s) => s.count));
+    return maxOrOne(split.map((s) => s.count));
   }
 }

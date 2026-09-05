@@ -40,9 +40,14 @@ export class ClaimsQueue implements OnInit {
   }
 
   updateStatus(claim: Claim, status: ClaimStatus): void {
-    this.claimService.updateStatus(claim.id, { status }).subscribe(() => {
-      this.notifications.success(`Claim ${claim.claimNumber} updated to ${status}.`);
-      this.load();
+    this.claimService.updateStatus(claim.id, { status }).subscribe({
+      next: () => {
+        this.notifications.success(`Claim ${claim.claimNumber} updated to ${status}.`);
+        this.load();
+      },
+      error: () => {
+        /* user-facing notification is shown by the global error interceptor */
+      }
     });
   }
 }

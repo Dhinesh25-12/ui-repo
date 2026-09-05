@@ -41,9 +41,14 @@ export class UserManagement implements OnInit {
   toggleRole(user: AuthUser, role: UserRole): void {
     const hasRole = user.roles.includes(role);
     const roles = hasRole ? user.roles.filter((r) => r !== role) : [...user.roles, role];
-    this.userAdminService.updateRoles(user.id, roles).subscribe(() => {
-      this.notifications.success(`Updated roles for ${user.username}.`);
-      this.load();
+    this.userAdminService.updateRoles(user.id, roles).subscribe({
+      next: () => {
+        this.notifications.success(`Updated roles for ${user.username}.`);
+        this.load();
+      },
+      error: () => {
+        /* user-facing notification is shown by the global error interceptor */
+      }
     });
   }
 }

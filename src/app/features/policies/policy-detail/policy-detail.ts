@@ -46,16 +46,24 @@ export class PolicyDetail implements OnInit {
   }
 
   fetchRenewalQuote(): void {
-    this.policyService.getRenewalQuote(this.policyId).subscribe((quote) => {
-      this.renewalQuote.set(quote);
+    this.policyService.getRenewalQuote(this.policyId).subscribe({
+      next: (quote) => this.renewalQuote.set(quote),
+      error: () => {
+        /* user-facing notification is shown by the global error interceptor */
+      }
     });
   }
 
   renew(): void {
-    this.policyService.renew(this.policyId).subscribe(() => {
-      this.notifications.success('Policy renewed successfully.');
-      this.renewalQuote.set(null);
-      this.load();
+    this.policyService.renew(this.policyId).subscribe({
+      next: () => {
+        this.notifications.success('Policy renewed successfully.');
+        this.renewalQuote.set(null);
+        this.load();
+      },
+      error: () => {
+        /* user-facing notification is shown by the global error interceptor */
+      }
     });
   }
 
@@ -64,10 +72,15 @@ export class PolicyDetail implements OnInit {
       this.notifications.error('Please provide a reason for cancellation.');
       return;
     }
-    this.policyService.requestCancellation(this.policyId, { reason: this.cancelReason() }).subscribe(() => {
-      this.notifications.success('Cancellation request submitted.');
-      this.showCancelForm.set(false);
-      this.load();
+    this.policyService.requestCancellation(this.policyId, { reason: this.cancelReason() }).subscribe({
+      next: () => {
+        this.notifications.success('Cancellation request submitted.');
+        this.showCancelForm.set(false);
+        this.load();
+      },
+      error: () => {
+        /* user-facing notification is shown by the global error interceptor */
+      }
     });
   }
 

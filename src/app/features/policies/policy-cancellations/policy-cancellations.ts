@@ -39,16 +39,26 @@ export class PolicyCancellations implements OnInit {
   }
 
   approve(id: number): void {
-    this.policyService.approveCancellation(id).subscribe(() => {
-      this.notifications.success('Cancellation approved.');
-      this.load();
+    this.policyService.approveCancellation(id).subscribe({
+      next: () => {
+        this.notifications.success('Cancellation approved.');
+        this.load();
+      },
+      error: () => {
+        /* user-facing notification is shown by the global error interceptor */
+      }
     });
   }
 
   reject(id: number): void {
-    this.policyService.rejectCancellation(id).subscribe(() => {
-      this.notifications.success('Cancellation rejected.');
-      this.load();
+    this.policyService.rejectCancellation(id).subscribe({
+      next: () => {
+        this.notifications.success('Cancellation rejected.');
+        this.load();
+      },
+      error: () => {
+        /* user-facing notification is shown by the global error interceptor */
+      }
     });
   }
 }
