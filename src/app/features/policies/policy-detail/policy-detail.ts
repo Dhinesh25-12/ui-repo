@@ -1,5 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { PolicyService } from '../../../core/services/policy.service';
 import { Policy, RenewalQuote } from '../../../core/models/policy.model';
@@ -10,7 +11,7 @@ import { NotificationService } from '../../../core/services/notification.service
 @Component({
   selector: 'app-policy-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, LoadingSpinner, StatusBadge],
+  imports: [CommonModule, FormsModule, RouterLink, LoadingSpinner, StatusBadge],
   templateUrl: './policy-detail.html',
   styleUrl: './policy-detail.scss'
 })
@@ -18,8 +19,8 @@ export class PolicyDetail implements OnInit {
   readonly loading = signal(true);
   readonly policy = signal<Policy | null>(null);
   readonly renewalQuote = signal<RenewalQuote | null>(null);
-  readonly cancelReason = signal('');
   readonly showCancelForm = signal(false);
+  cancelReason = '';
 
   private policyId!: number;
 
@@ -68,11 +69,11 @@ export class PolicyDetail implements OnInit {
   }
 
   requestCancellation(): void {
-    if (!this.cancelReason().trim()) {
+    if (!this.cancelReason.trim()) {
       this.notifications.error('Please provide a reason for cancellation.');
       return;
     }
-    this.policyService.requestCancellation(this.policyId, { reason: this.cancelReason() }).subscribe({
+    this.policyService.requestCancellation(this.policyId, { reason: this.cancelReason }).subscribe({
       next: () => {
         this.notifications.success('Cancellation request submitted.');
         this.showCancelForm.set(false);
@@ -82,9 +83,5 @@ export class PolicyDetail implements OnInit {
         /* user-facing notification is shown by the global error interceptor */
       }
     });
-  }
-
-  setCancelReason(value: string): void {
-    this.cancelReason.set(value);
   }
 }

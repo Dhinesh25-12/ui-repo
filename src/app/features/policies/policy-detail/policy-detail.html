@@ -30,7 +30,7 @@
 
     <div class="cancel-form" *ngIf="showCancelForm()">
       <label>Reason for cancellation</label>
-      <textarea rows="3" [value]="cancelReason()" (input)="setCancelReason($any($event.target).value)"></textarea>
+      <textarea rows="3" [(ngModel)]="cancelReason"></textarea>
       <button class="danger" (click)="requestCancellation()">Submit cancellation request</button>
     </div>
   </div>

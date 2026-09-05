@@ -36,6 +36,7 @@ export class ProductList implements OnInit {
 
   load(): void {
     this.loading.set(true);
+    this.selectedIds.set(new Set());
     this.productService
       .getAll({ category: this.category || undefined, term: this.term || undefined })
       .subscribe({
