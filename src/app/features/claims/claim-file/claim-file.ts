@@ -35,7 +35,12 @@ export class ClaimFile implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.policyService.getMyPolicies().subscribe((policies) => this.policies.set(policies));
+    this.policyService.getMyPolicies().subscribe({
+      next: (policies) => this.policies.set(policies),
+      error: () => {
+        /* user-facing notification is shown by the global error interceptor */
+      }
+    });
   }
 
   onFilesSelected(event: Event): void {

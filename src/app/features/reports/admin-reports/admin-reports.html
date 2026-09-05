@@ -22,7 +22,7 @@
         <tbody>
           <tr *ngFor="let row of claimsRatio()">
             <td>{{ row.period }}</td><td>{{ row.claimsFiled }}</td><td>{{ row.claimsSettled }}</td>
-            <td>{{ (row.settlementRatio * 100).toFixed(1) }}%</td>
+            <td>{{ row.settlementRatio * 100 | number:'1.1-1' }}%</td>
           </tr>
         </tbody>
       </table>

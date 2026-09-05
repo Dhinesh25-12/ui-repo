@@ -42,8 +42,11 @@ export class ProductAdmin implements OnInit {
     if (idParam && idParam !== 'new') {
       this.productId = Number(idParam);
       this.isEdit.set(true);
-      this.productService.getById(this.productId).subscribe((product) => {
-        this.form.patchValue(product);
+      this.productService.getById(this.productId).subscribe({
+        next: (product) => this.form.patchValue(product),
+        error: () => {
+          /* user-facing notification is shown by the global error interceptor */
+        }
       });
     }
   }
