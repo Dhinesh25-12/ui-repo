@@ -1,0 +1,16 @@
+.header-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+h1 { margin: 0; }
+p { margin: 0.25rem 0 0; color: #6b7280; font-size: 0.9rem; }
+.search-field { display: flex; flex-direction: column; gap: 0.35rem; color: #374151; font-size: 0.85rem; font-weight: 600; min-width: min(320px, 100%); }
+.search-field input { border: 1px solid #d1d5db; border-radius: 8px; padding: 0.55rem 0.7rem; font-size: 0.9rem; }
+.customer-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; }
+.customer-table th, .customer-table td { padding: 0.7rem 1rem; border-bottom: 1px solid #f3f4f6; text-align: left; font-size: 0.88rem; }
+.customer-table th { background: #f9fafb; }
+.customer-table tbody tr { cursor: pointer; }
+.customer-table tbody tr:hover, .customer-table tbody tr:focus { background: #f9fafb; outline: none; }
+.pagination { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-top: 1rem; color: #6b7280; font-size: 0.85rem; flex-wrap: wrap; }
+.pagination div { display: flex; gap: 0.5rem; }
+button { border: none; border-radius: 8px; padding: 0.45rem 0.85rem; background: #2563eb; color: #fff; cursor: pointer; font-weight: 600; }
+button:disabled { background: #d1d5db; cursor: not-allowed; }
+.error-state { background: #fff; border-radius: 12px; padding: 1.5rem; text-align: center; color: #dc2626; }
+.error-state button { margin-top: 0.75rem; }

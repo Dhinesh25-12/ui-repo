@@ -64,6 +64,18 @@ export const routes: Routes = [
           import('./features/policies/policy-detail/policy-detail').then((m) => m.PolicyDetail)
       },
       {
+        path: 'customers',
+        canActivate: [roleGuard(['AGENT', 'ADMIN'])],
+        loadComponent: () =>
+          import('./features/customers/customer-list/customer-list').then((m) => m.CustomerList)
+      },
+      {
+        path: 'customers/:id',
+        canActivate: [roleGuard(['AGENT', 'ADMIN'])],
+        loadComponent: () =>
+          import('./features/customers/customer-detail/customer-detail').then((m) => m.CustomerDetail)
+      },
+      {
         path: 'claims',
         canActivate: [roleGuard(['CUSTOMER', 'CLAIMS_OFFICER', 'ADMIN'])],
         loadComponent: () => import('./features/claims/claims-home/claims-home').then((m) => m.ClaimsHome)
