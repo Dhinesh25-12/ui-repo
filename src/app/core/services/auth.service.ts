@@ -84,7 +84,7 @@ export class AuthService {
    */
   private scheduleAutoLogoutFromStorage(): void {
     const expiresAt = Number(localStorage.getItem(EXPIRES_AT_KEY));
-    if (!expiresAt) {
+    if (!Number.isFinite(expiresAt) || expiresAt <= 0) {
       return;
     }
     const remaining = expiresAt - Date.now();

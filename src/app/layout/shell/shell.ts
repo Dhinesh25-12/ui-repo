@@ -73,8 +73,11 @@ export class Shell {
   }
 
   toggleNotifications(): void {
+    const wasOpen = this.notificationsOpen();
     this.notificationsOpen.update((open) => !open);
-    if (this.notificationsOpen()) {
+    // Mark as read when the panel is closed, so the badge stays visible
+    // while the user is actually looking at the list.
+    if (wasOpen) {
       this.notifications.markAllRead();
     }
   }
