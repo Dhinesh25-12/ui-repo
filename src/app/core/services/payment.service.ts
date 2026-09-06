@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { Payment, PremiumPaymentRequest } from '../models/payment.model';
+import { PageResponse } from '../models/customer.model';
 
 @Injectable({ providedIn: 'root' })
 export class PaymentService {
@@ -10,8 +12,9 @@ export class PaymentService {
 
   constructor(private readonly http: HttpClient) {}
 
+  /** Backend returns a paginated `Page<PaymentResponse>`; unwrap to the flat list the UI needs. */
   getHistory(): Observable<Payment[]> {
-    return this.http.get<Payment[]>(`${this.baseUrl}/me`);
+    return this.http.get<PageResponse<Payment>>(`${this.baseUrl}/me`).pipe(map((page) => page.content));
   }
 
   pay(payload: PremiumPaymentRequest): Observable<Payment> {

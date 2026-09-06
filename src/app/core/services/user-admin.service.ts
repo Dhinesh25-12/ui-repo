@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { AuthUser, UserRole } from '../models/user.model';
+import { PageResponse } from '../models/customer.model';
 
 @Injectable({ providedIn: 'root' })
 export class UserAdminService {
@@ -10,8 +12,9 @@ export class UserAdminService {
 
   constructor(private readonly http: HttpClient) {}
 
+  /** Backend returns a paginated `Page<UserResponse>`; unwrap to the flat list the UI needs. */
   getAll(): Observable<AuthUser[]> {
-    return this.http.get<AuthUser[]>(this.baseUrl);
+    return this.http.get<PageResponse<AuthUser>>(this.baseUrl).pipe(map((page) => page.content));
   }
 
   updateRoles(userId: number, roles: UserRole[]): Observable<AuthUser> {
