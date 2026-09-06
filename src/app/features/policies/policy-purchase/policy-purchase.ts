@@ -25,8 +25,8 @@ export class PolicyPurchase implements OnInit {
   readonly form = this.fb.nonNullable.group({
     productId: [0, [Validators.required, Validators.min(1)]],
     nominee: this.fb.nonNullable.group({
-      name: ['', Validators.required],
-      relationship: ['', Validators.required],
+      name: ['', [Validators.required, Validators.pattern(/\S/)]],
+      relationship: ['', [Validators.required, Validators.pattern(/\S/)]],
       contactNumber: ['']
     })
   });
@@ -75,11 +75,15 @@ export class PolicyPurchase implements OnInit {
    */
   private buildPayload(): PurchasePolicyRequest {
     const raw = this.form.getRawValue();
-    return {
+    const contact = raw.nominee.contactNumber.trim();
+    const payload: PurchasePolicyRequest = {
       productId: raw.productId,
       nomineeName: raw.nominee.name.trim(),
-      nomineeRelationship: raw.nominee.relationship.trim(),
-      nomineeContact: raw.nominee.contactNumber.trim()
+      nomineeRelationship: raw.nominee.relationship.trim()
     };
+    if (contact) {
+      payload.nomineeContact = contact;
+    }
+    return payload;
   }
 }

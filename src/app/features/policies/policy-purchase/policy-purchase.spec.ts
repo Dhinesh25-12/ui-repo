@@ -40,6 +40,31 @@ describe('PolicyPurchase', () => {
     expect(policyServiceStub.purchase).not.toHaveBeenCalled();
   });
 
+  it('rejects a whitespace-only nominee name instead of sending a blank one', () => {
+    const component = createComponent();
+    component.form.setValue({
+      productId: 5,
+      nominee: { name: '   ', relationship: 'Spouse', contactNumber: '' }
+    });
+    component.submit();
+    expect(policyServiceStub.purchase).not.toHaveBeenCalled();
+  });
+
+  it('omits the optional nominee contact when it is left blank', () => {
+    const component = createComponent();
+    component.form.setValue({
+      productId: 5,
+      nominee: { name: 'Jane Doe', relationship: 'Spouse', contactNumber: '  ' }
+    });
+    component.submit();
+
+    expect(policyServiceStub.purchase).toHaveBeenCalledWith({
+      productId: 5,
+      nomineeName: 'Jane Doe',
+      nomineeRelationship: 'Spouse'
+    });
+  });
+
   it('flattens the grouped nominee form into the flat backend request shape', () => {
     const component = createComponent();
     component.form.setValue({
