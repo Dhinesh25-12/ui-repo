@@ -76,18 +76,44 @@ describe('Profile', () => {
     expect(component.form.get('dateOfBirth')?.hasError('futureDate')).toBe(true);
   });
 
-  it('omits blank optional fields when saving', () => {
+  it('sends cleared text fields as empty values but omits a blank date of birth', () => {
     const component = createComponent();
     component.submit();
 
     expect(userServiceStub.updateProfile).toHaveBeenCalledWith({
       firstName: 'Jane',
       lastName: 'Doe',
+      phone: '',
+      address: '',
       city: 'Pune',
-      kycIdType: 'PAN'
+      state: '',
+      postalCode: '',
+      kycIdType: 'PAN',
+      kycIdNumber: ''
     });
     expect(notificationsStub.success).toHaveBeenCalled();
     expect(component.saving()).toBe(false);
+  });
+
+  it('omits KYC fields for non-customer roles', () => {
+    userServiceStub.getProfile.mockReturnValue(
+      of({ ...customer, roles: ['AGENT'], kycIdType: 'PAN', dateOfBirth: '1990-01-01' })
+    );
+    const component = createComponent();
+    expect(component.isCustomer()).toBe(false);
+    component.submit();
+
+    const payload = userServiceStub.updateProfile.mock.calls[0][0];
+    expect(payload.kycIdType).toBeUndefined();
+    expect(payload.dateOfBirth).toBeUndefined();
+  });
+
+  it('flags a failed profile load instead of showing an empty form', () => {
+    userServiceStub.getProfile.mockReturnValue(throwError(() => new Error('boom')));
+    const component = createComponent();
+
+    expect(component.loading()).toBe(false);
+    expect(component.loadFailed()).toBe(true);
   });
 
   it('requires the new password and its confirmation to match', () => {

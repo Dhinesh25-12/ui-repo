@@ -3,7 +3,11 @@
 
   <app-loading-spinner *ngIf="loading()"></app-loading-spinner>
 
-  <ng-container *ngIf="!loading()">
+  <p class="error" *ngIf="!loading() && loadFailed()">
+    We couldn't load your profile right now. Please refresh the page and try again.
+  </p>
+
+  <ng-container *ngIf="!loading() && !loadFailed()">
     <div class="card account" *ngIf="profile() as user">
       <dl>
         <dt>Username</dt><dd>{{ user.username }}</dd>
@@ -86,7 +90,10 @@
 
       <label for="newPassword">New password</label>
       <input id="newPassword" type="password" formControlName="newPassword" />
-      <p class="error" *ngIf="passwordForm.get('newPassword')?.touched && passwordForm.get('newPassword')?.invalid">
+      <p class="error" *ngIf="passwordForm.get('newPassword')?.touched && passwordForm.get('newPassword')?.hasError('required')">
+        New password is required.
+      </p>
+      <p class="error" *ngIf="passwordForm.get('newPassword')?.touched && passwordForm.get('newPassword')?.hasError('minlength')">
         Password must be at least 6 characters.
       </p>
 

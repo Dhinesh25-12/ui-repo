@@ -39,6 +39,7 @@ export class Profile implements OnInit {
   readonly auth = inject(AuthService);
 
   readonly loading = signal(true);
+  readonly loadFailed = signal(false);
   readonly saving = signal(false);
   readonly changingPassword = signal(false);
   readonly currentPasswordError = signal<string | null>(null);
@@ -89,7 +90,10 @@ export class Profile implements OnInit {
         });
         this.loading.set(false);
       },
-      error: () => this.loading.set(false)
+      error: () => {
+        this.loadFailed.set(true);
+        this.loading.set(false);
+      }
     });
   }
 
@@ -135,16 +139,31 @@ export class Profile implements OnInit {
     });
   }
 
-  /** Blank optional inputs are omitted so the backend doesn't try to parse empty values. */
+  /**
+   * Sends cleared text fields as empty strings so a value can be removed, but
+   * omits a blank date of birth (and the whole KYC block for non-customers)
+   * because the backend cannot parse an empty date.
+   */
   private buildPayload(): UpdateProfileRequest {
     const raw = this.form.getRawValue();
-    const payload: UpdateProfileRequest = {};
-    (Object.keys(raw) as (keyof typeof raw)[]).forEach((key) => {
-      const value = raw[key].trim();
-      if (value.length > 0) {
-        payload[key] = value;
+    const payload: UpdateProfileRequest = {
+      firstName: raw.firstName.trim(),
+      lastName: raw.lastName.trim(),
+      phone: raw.phone.trim(),
+      address: raw.address.trim(),
+      city: raw.city.trim(),
+      state: raw.state.trim(),
+      postalCode: raw.postalCode.trim()
+    };
+
+    if (this.isCustomer()) {
+      payload.kycIdType = raw.kycIdType.trim();
+      payload.kycIdNumber = raw.kycIdNumber.trim();
+      if (raw.dateOfBirth) {
+        payload.dateOfBirth = raw.dateOfBirth;
       }
-    });
+    }
+
     return payload;
   }
 
