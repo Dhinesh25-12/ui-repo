@@ -2,4 +2,15 @@ h1 { margin: 0 0 1rem; }
 .queue-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; }
 .queue-table th, .queue-table td { padding: 0.7rem 1rem; border-bottom: 1px solid #f3f4f6; text-align: left; font-size: 0.88rem; }
 .queue-table th { background: #f9fafb; }
-select { padding: 0.35rem 0.6rem; border: 1px solid #d1d5db; border-radius: 8px; }
+.actions { display: flex; gap: 0.5rem; }
+.actions button {
+  border: none;
+  border-radius: 8px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.actions button:disabled { opacity: 0.5; cursor: not-allowed; }
+.actions .approve { background: #16a34a; color: #fff; }
+.actions .reject { background: #dc2626; color: #fff; }

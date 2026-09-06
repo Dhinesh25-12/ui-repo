@@ -6,7 +6,7 @@
 
   <table class="user-table" *ngIf="!loading() && users().length">
     <thead>
-      <tr><th>Username</th><th>Full name</th><th>Email</th><th>Roles</th></tr>
+      <tr><th>Username</th><th>Full name</th><th>Email</th><th>Roles</th><th>Status</th></tr>
     </thead>
     <tbody>
       <tr *ngFor="let user of users()">
@@ -22,6 +22,16 @@
             />
             {{ role }}
           </label>
+        </td>
+        <td>
+          <button
+            type="button"
+            class="status-btn"
+            [class.suspend]="user.enabled ?? true"
+            (click)="toggleEnabled(user)"
+          >
+            {{ (user.enabled ?? true) ? 'Suspend' : 'Activate' }}
+          </button>
         </td>
       </tr>
     </tbody>

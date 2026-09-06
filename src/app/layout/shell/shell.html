@@ -15,17 +15,37 @@
         <span class="nav-label">{{ item.label }}</span>
       </a>
     </nav>
+    <button class="logout-btn sidebar-logout" (click)="logout()">
+      <span class="nav-icon">🚪</span>
+      <span>Logout</span>
+    </button>
   </aside>
 
   <div class="main">
     <header class="topbar">
       <button class="menu-toggle" (click)="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+      <h1 class="page-title">{{ pageTitle() }}</h1>
       <div class="spacer"></div>
-      <div class="user-info" *ngIf="auth.currentUser() as user">
-        <span class="user-name">{{ user.fullName }}</span>
-        <span class="user-roles">{{ user.roles.join(', ') }}</span>
+
+      <button class="bell-btn" (click)="toggleNotifications()" aria-label="Notifications">
+        🔔
+        <span class="bell-badge" *ngIf="unreadCount() > 0">{{ unreadCount() }}</span>
+      </button>
+
+      <div class="user-menu" *ngIf="auth.currentUser() as user">
+        <button class="user-info" (click)="toggleUserMenu()">
+          <span class="avatar">{{ user.fullName?.charAt(0) || '?' }}</span>
+          <span class="user-text">
+            <span class="user-name">{{ user.fullName }}</span>
+            <span class="user-roles">{{ user.roles.join(', ') }}</span>
+          </span>
+          <span class="caret">▾</span>
+        </button>
+        <div class="user-dropdown" *ngIf="userMenuOpen()">
+          <a routerLink="/profile" (click)="toggleUserMenu()">My Profile</a>
+          <button (click)="logout()">Logout</button>
+        </div>
       </div>
-      <button class="logout-btn" (click)="logout()">Logout</button>
     </header>
 
     <main class="content">

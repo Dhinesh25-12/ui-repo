@@ -1,5 +1,62 @@
 .dashboard { max-width: 1200px; }
-h1 { margin: 0 0 1.25rem; }
+
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  background: linear-gradient(135deg, #eff6ff 0%, #ede9fe 100%);
+  border-radius: 16px;
+  padding: 1.75rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.hero-brand { flex: 1; min-width: 260px; }
+
+.brand-title { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+.brand-icon { font-size: 2.25rem; }
+.brand-title h1 { margin: 0; font-size: 1.4rem; color: #111827; }
+.tagline { margin: 0.15rem 0 0; color: #4b5563; font-size: 0.9rem; }
+
+.quick-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+.quick-action {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #fff;
+  border-radius: 999px;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #1f2937;
+  text-decoration: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+.quick-action:hover { background: #2563eb; color: #fff; }
+
+.hero-illustration {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 3.5rem;
+}
+.illustration-icon.secondary { font-size: 2.75rem; }
+
+.page-title-row { margin-bottom: 1rem; }
+.page-title-row h2 { margin: 0; color: #111827; }
+
+.retry-btn {
+  display: block;
+  margin: 0 auto 1.5rem;
+  padding: 0.5rem 1.25rem;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+}
 
 .kpi-grid {
   display: grid;
@@ -12,6 +69,7 @@ h1 { margin: 0 0 1.25rem; }
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .card {
@@ -19,9 +77,54 @@ h1 { margin: 0 0 1.25rem; }
   border-radius: 12px;
   padding: 1.25rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
 }
 
 .card h2 { margin: 0 0 1rem; font-size: 1rem; color: #374151; }
+
+.widget-link {
+  margin-top: auto;
+  padding-top: 0.75rem;
+  color: #2563eb;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-decoration: none;
+}
+.widget-link:hover { text-decoration: underline; }
+
+.donut-wrapper { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+.donut {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  position: relative;
+  flex-shrink: 0;
+}
+.donut-center {
+  position: absolute;
+  inset: 22px;
+  background: #fff;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.donut-total { font-size: 1.5rem; font-weight: 700; color: #111827; }
+.donut-label { font-size: 0.7rem; color: #6b7280; }
+
+.legend { list-style: none; margin: 0; padding: 0; flex: 1; min-width: 140px; }
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #374151;
+  padding: 0.25rem 0;
+}
+.legend-count { margin-left: auto; font-weight: 600; }
+.swatch { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
 
 .bar-row { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.6rem; font-size: 0.85rem; }
 .bar-label { width: 90px; color: #6b7280; }
@@ -33,13 +136,38 @@ h1 { margin: 0 0 1.25rem; }
 .activity ul { list-style: none; margin: 0; padding: 0; }
 .activity li {
   display: flex;
-  justify-content: space-between;
-  padding: 0.5rem 0;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.6rem 0;
   border-bottom: 1px solid #f3f4f6;
   font-size: 0.85rem;
 }
+.activity-icon { font-size: 1.25rem; }
+.activity-body { flex: 1; }
+.activity-title { margin: 0; font-weight: 600; color: #111827; }
+.activity-subtitle { margin: 0.15rem 0 0; color: #6b7280; font-size: 0.8rem; }
+.activity-meta { text-align: right; }
+.activity-amount { display: block; font-weight: 600; color: #374151; }
 .activity time { color: #9ca3af; font-size: 0.75rem; }
+
+.feature-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+.feature-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+.feature-icon { font-size: 1.75rem; }
+.feature-card h3 { margin: 0.5rem 0 0.25rem; font-size: 0.95rem; color: #111827; }
+.feature-card p { margin: 0; font-size: 0.8rem; color: #6b7280; }
 
 @media (max-width: 600px) {
   .bar-label { width: 60px; }
+  .hero { flex-direction: column; align-items: flex-start; }
+  .donut-wrapper { justify-content: center; }
 }

@@ -3,21 +3,31 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthUser, LoginRequest, LoginResponse, RegisterRequest, UserRole } from '../models/user.model';
+import { NotificationService } from './notification.service';
 
 const TOKEN_KEY = 'ip_auth_token';
 const USER_KEY = 'ip_auth_user';
+const EXPIRES_AT_KEY = 'ip_auth_expires_at';
+/** setTimeout only supports a 32-bit signed delay; longer waits must be chunked. */
+const MAX_TIMEOUT_MS = 2_147_483_647;
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly currentUserSignal = signal<AuthUser | null>(this.readStoredUser());
   private readonly tokenSignal = signal<string | null>(localStorage.getItem(TOKEN_KEY));
+  private logoutTimer: ReturnType<typeof setTimeout> | null = null;
 
   readonly currentUser = this.currentUserSignal.asReadonly();
   readonly token = this.tokenSignal.asReadonly();
   readonly isAuthenticated = computed(() => !!this.tokenSignal());
   readonly roles = computed<UserRole[]>(() => this.currentUserSignal()?.roles ?? []);
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(
+    private readonly http: HttpClient,
+    private readonly notifications: NotificationService
+  ) {
+    this.scheduleAutoLogoutFromStorage();
+  }
 
   login(payload: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${environment.apiBaseUrl}/auth/login`, payload).pipe(
@@ -32,8 +42,10 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
+    localStorage.removeItem(EXPIRES_AT_KEY);
     this.tokenSignal.set(null);
     this.currentUserSignal.set(null);
+    this.clearLogoutTimer();
   }
 
   hasRole(role: UserRole): boolean {
@@ -54,6 +66,54 @@ export class AuthService {
     localStorage.setItem(USER_KEY, JSON.stringify(response.user));
     this.tokenSignal.set(response.token);
     this.currentUserSignal.set(response.user);
+
+    if (response.expiresIn && response.expiresIn > 0) {
+      const expiresInMs = response.expiresIn * 1000;
+      localStorage.setItem(EXPIRES_AT_KEY, String(Date.now() + expiresInMs));
+      this.scheduleAutoLogout(expiresInMs);
+    } else {
+      localStorage.removeItem(EXPIRES_AT_KEY);
+      this.clearLogoutTimer();
+    }
+  }
+
+  /**
+   * On app start, resumes the session-timeout countdown from a previously
+   * stored expiry so a page refresh doesn't reset it, and immediately logs
+   * out if the token already expired while the app was closed.
+   */
+  private scheduleAutoLogoutFromStorage(): void {
+    const expiresAt = Number(localStorage.getItem(EXPIRES_AT_KEY));
+    if (!Number.isFinite(expiresAt) || expiresAt <= 0) {
+      return;
+    }
+    const remaining = expiresAt - Date.now();
+    if (remaining <= 0) {
+      this.logout();
+      return;
+    }
+    this.scheduleAutoLogout(remaining);
+  }
+
+  private scheduleAutoLogout(ms: number): void {
+    this.clearLogoutTimer();
+    if (ms > MAX_TIMEOUT_MS) {
+      // setTimeout truncates delays beyond ~24.8 days; re-check after the max
+      // chunk and reschedule the remaining time instead of firing early.
+      this.logoutTimer = setTimeout(() => this.scheduleAutoLogoutFromStorage(), MAX_TIMEOUT_MS);
+      return;
+    }
+    this.logoutTimer = setTimeout(() => {
+      this.logout();
+      this.notifications.info('Your session has expired. Please log in again.');
+    }, ms);
+  }
+
+  private clearLogoutTimer(): void {
+    if (this.logoutTimer) {
+      clearTimeout(this.logoutTimer);
+      this.logoutTimer = null;
+    }
   }
 
   private readStoredUser(): AuthUser | null {

@@ -23,10 +23,10 @@
 
     <label>Supporting documents</label>
     <input type="file" multiple (change)="onFilesSelected($event)" />
-    <ul class="doc-list" *ngIf="documents().length">
-      <li *ngFor="let doc of documents()">{{ doc.fileName }}</li>
+    <ul class="doc-list" *ngIf="selectedFiles().length">
+      <li *ngFor="let file of selectedFiles()">{{ file.name }}</li>
     </ul>
-    <p class="hint">Only document metadata is recorded; actual file storage depends on backend support.</p>
+    <p class="hint">Selected files are uploaded with your claim submission.</p>
 
     <button type="submit" [disabled]="submitting()">
       {{ submitting() ? 'Submitting...' : 'Submit claim' }}

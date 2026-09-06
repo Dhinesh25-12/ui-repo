@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
+import { vi } from 'vitest';
 import { AuthService } from './auth.service';
 import { environment } from '../../../environments/environment';
 
@@ -19,6 +20,7 @@ describe('AuthService', () => {
 
   afterEach(() => {
     httpMock.verify();
+    vi.useRealTimers();
   });
 
   it('starts unauthenticated when there is no stored token', () => {
@@ -51,5 +53,34 @@ describe('AuthService', () => {
 
     expect(service.isAuthenticated()).toBe(false);
     expect(service.currentUser()).toBeNull();
+  });
+
+  it('auto-logs-out once the expiresIn duration elapses', () => {
+    vi.useFakeTimers();
+    service.login({ username: 'admin', password: 'secret' }).subscribe();
+    httpMock.expectOne(`${environment.apiBaseUrl}/auth/login`).flush({
+      token: 't',
+      expiresIn: 60,
+      user: { id: 1, username: 'a', email: 'a@b.com', fullName: 'A', roles: ['CUSTOMER'] }
+    });
+
+    expect(service.isAuthenticated()).toBe(true);
+
+    vi.advanceTimersByTime(60_000);
+
+    expect(service.isAuthenticated()).toBe(false);
+    expect(service.currentUser()).toBeNull();
+  });
+
+  it('does not schedule an auto-logout when expiresIn is absent', () => {
+    vi.useFakeTimers();
+    service.login({ username: 'admin', password: 'secret' }).subscribe();
+    httpMock
+      .expectOne(`${environment.apiBaseUrl}/auth/login`)
+      .flush({ token: 't', user: { id: 1, username: 'a', email: 'a@b.com', fullName: 'A', roles: ['CUSTOMER'] } });
+
+    vi.advanceTimersByTime(24 * 60 * 60 * 1000);
+
+    expect(service.isAuthenticated()).toBe(true);
   });
 });

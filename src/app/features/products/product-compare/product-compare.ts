@@ -1,7 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { forkJoin } from 'rxjs';
 import { ProductService } from '../../../core/services/product.service';
 import { Product } from '../../../core/models/product.model';
 import { LoadingSpinner } from '../../../shared/components/loading-spinner/loading-spinner';
@@ -35,7 +34,7 @@ export class ProductCompare implements OnInit {
       return;
     }
 
-    forkJoin(ids.map((id) => this.productService.getById(id))).subscribe({
+    this.productService.compare(ids).subscribe({
       next: (products) => {
         this.products.set(products);
         this.loading.set(false);
