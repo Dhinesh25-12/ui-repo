@@ -1,12 +1,5 @@
 export type PolicyStatus = 'ACTIVE' | 'EXPIRED' | 'CANCELLED' | 'PENDING_CANCELLATION';
 
-export interface NomineeDetails {
-  name: string;
-  relationship: string;
-  dateOfBirth: string;
-  contactNumber?: string;
-}
-
 export interface Policy {
   id: number;
   policyNumber: string;
@@ -19,12 +12,16 @@ export interface Policy {
   premiumAmount: number;
   coverageAmount: number;
   status: PolicyStatus;
-  nominee: NomineeDetails;
+  nomineeName?: string;
+  nomineeRelationship?: string;
+  nomineeContact?: string;
 }
 
 export interface PurchasePolicyRequest {
   productId: number;
-  nominee: NomineeDetails;
+  nomineeName: string;
+  nomineeRelationship?: string;
+  nomineeContact?: string;
 }
 
 export interface RenewalQuote {

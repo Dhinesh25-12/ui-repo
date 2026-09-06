@@ -43,6 +43,27 @@ describe('PolicyService', () => {
     expect(result).toEqual([]);
   });
 
+  it('posts a flat purchase body matching the backend request shape', () => {
+    service
+      .purchase({
+        productId: 5,
+        nomineeName: 'Jane Doe',
+        nomineeRelationship: 'Spouse',
+        nomineeContact: '9876543210'
+      })
+      .subscribe();
+
+    const req = httpMock.expectOne(`${environment.apiBaseUrl}/policies/purchase`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({
+      productId: 5,
+      nomineeName: 'Jane Doe',
+      nomineeRelationship: 'Spouse',
+      nomineeContact: '9876543210'
+    });
+    req.flush({ id: 1, policyNumber: 'POL-1', nomineeName: 'Jane Doe' });
+  });
+
   it('fetches pending cancellation requests and unwraps the paginated response', () => {
     let result: unknown;
     service.getPendingCancellations().subscribe((policies) => (result = policies));
