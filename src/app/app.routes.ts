@@ -116,6 +116,12 @@ export const routes: Routes = [
           import('./features/admin/user-management/user-management').then((m) => m.UserManagement)
       },
       {
+        path: 'admin/settings',
+        canActivate: [roleGuard(['ADMIN'])],
+        loadComponent: () =>
+          import('./features/admin/platform-settings/platform-settings').then((m) => m.PlatformSettings)
+      },
+      {
         path: 'forbidden',
         loadComponent: () => import('./shared/pages/forbidden/forbidden').then((m) => m.Forbidden)
       }

@@ -1,0 +1,25 @@
+h1 { margin: 0 0 0.5rem; }
+.page-note { margin: 0 0 1.25rem; color: #6b7280; font-size: 0.85rem; max-width: 60rem; }
+.settings-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; }
+.settings-table th, .settings-table td { padding: 0.7rem 1rem; border-bottom: 1px solid #f3f4f6; text-align: left; font-size: 0.88rem; vertical-align: top; }
+.settings-table th { background: #f9fafb; }
+.settings-table tr.read-only-row td { background: #fafafa; }
+.setting-key { font-weight: 600; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.82rem; }
+.setting-description { margin-top: 0.2rem; color: #6b7280; font-size: 0.8rem; }
+.value-input { width: 100%; max-width: 18rem; padding: 0.4rem 0.6rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 0.85rem; }
+.value-input:disabled { background: #f3f4f6; }
+.value-static { color: #9ca3af; font-style: italic; }
+.badge { display: inline-block; padding: 0.2rem 0.55rem; border-radius: 999px; font-size: 0.72rem; font-weight: 600; background: #e5e7eb; color: #6b7280; }
+.badge.editable { background: #dcfce7; color: #166534; }
+.no-edit-note { color: #9ca3af; font-size: 0.78rem; }
+.save-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #2563eb;
+  color: #fff;
+}
+.save-btn:disabled { background: #cbd5e1; cursor: not-allowed; }
