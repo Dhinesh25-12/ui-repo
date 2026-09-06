@@ -47,8 +47,8 @@ export class PlatformSettings implements OnInit {
     return this.drafts()[setting.key] ?? setting.value;
   }
 
-  onDraftChange(setting: PlatformSetting, value: string): void {
-    this.drafts.update((drafts) => ({ ...drafts, [setting.key]: value }));
+  onDraftChange(setting: PlatformSetting, value: string | number): void {
+    this.drafts.update((drafts) => ({ ...drafts, [setting.key]: String(value ?? '') }));
   }
 
   /** Numeric settings get a number input; everything else falls back to plain text. */
@@ -63,7 +63,7 @@ export class PlatformSettings implements OnInit {
   canSave(setting: PlatformSetting): boolean {
     return (
       setting.editable &&
-      this.savingKey() === null &&
+      this.savingKey() !== setting.key &&
       this.isDirty(setting) &&
       this.draftValue(setting).trim().length > 0
     );
