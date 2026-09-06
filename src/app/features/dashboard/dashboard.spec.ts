@@ -9,9 +9,10 @@ import { DashboardSummary } from '../../core/models/dashboard.model';
 
 /** Matches the product-category `policySplit` shape returned by the backend. */
 function summaryWith(policySplit: { category: string; count: number }[]): DashboardSummary {
+  const total = policySplit.reduce((sum, item) => sum + item.count, 0);
   return {
-    totalPolicies: 4,
-    activePolicies: 4,
+    totalPolicies: total,
+    activePolicies: total,
     claimsFiled: 1,
     totalPayments: 1000,
     policySplit,
@@ -19,6 +20,14 @@ function summaryWith(policySplit: { category: string; count: number }[]): Dashbo
     recentActivity: []
   };
 }
+
+/** Sample product-category split matching the approved dashboard mockup. */
+const MOCKUP_SPLIT = [
+  { category: 'Health Insurance', count: 2 },
+  { category: 'Motor Insurance', count: 1 },
+  { category: 'Life Insurance', count: 1 },
+  { category: 'Travel Insurance', count: 0 }
+];
 
 describe('Dashboard', () => {
   let dashboardServiceStub: { getSummary: ReturnType<typeof vi.fn> };
@@ -44,12 +53,7 @@ describe('Dashboard', () => {
   }
 
   it('renders a legend entry per product category with the center total', () => {
-    const element = renderWith([
-      { category: 'Health Insurance', count: 2 },
-      { category: 'Motor Insurance', count: 1 },
-      { category: 'Life Insurance', count: 1 },
-      { category: 'Travel Insurance', count: 0 }
-    ]);
+    const element = renderWith(MOCKUP_SPLIT);
 
     const legendItems = Array.from(element.querySelectorAll('.legend li'));
     expect(legendItems.map((li) => li.textContent?.trim().replace(/\s+/g, ' '))).toEqual([
@@ -63,12 +67,7 @@ describe('Dashboard', () => {
   });
 
   it('assigns a distinct swatch color to each category', () => {
-    const element = renderWith([
-      { category: 'Health Insurance', count: 2 },
-      { category: 'Motor Insurance', count: 1 },
-      { category: 'Life Insurance', count: 1 },
-      { category: 'Travel Insurance', count: 0 }
-    ]);
+    const element = renderWith(MOCKUP_SPLIT);
 
     const colors = Array.from(element.querySelectorAll<HTMLElement>('.legend .swatch')).map(
       (swatch) => swatch.style.background
