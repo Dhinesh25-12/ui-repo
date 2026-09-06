@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { Product, ProductRequest } from '../models/product.model';
+import { PageResponse } from '../models/customer.model';
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {
@@ -10,6 +12,7 @@ export class ProductService {
 
   constructor(private readonly http: HttpClient) {}
 
+  /** Backend returns a paginated `Page<ProductResponse>`; unwrap to the flat list the UI needs. */
   getAll(params?: { category?: string; term?: string }): Observable<Product[]> {
     let query = '';
     if (params?.category || params?.term) {
@@ -18,7 +21,9 @@ export class ProductService {
       if (params.term) search.set('term', params.term);
       query = `?${search.toString()}`;
     }
-    return this.http.get<Product[]>(`${this.baseUrl}${query}`);
+    return this.http
+      .get<PageResponse<Product>>(`${this.baseUrl}${query}`)
+      .pipe(map((page) => page.content));
   }
 
   getById(id: number): Observable<Product> {

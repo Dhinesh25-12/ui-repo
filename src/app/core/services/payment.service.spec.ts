@@ -20,11 +20,15 @@ describe('PaymentService', () => {
     httpMock.verify();
   });
 
-  it('fetches payment history from the canonical /me endpoint', () => {
-    service.getHistory().subscribe();
+  it('fetches payment history from the canonical /me endpoint and unwraps the page', () => {
+    let result: unknown;
+    service.getHistory().subscribe((payments) => (result = payments));
     const req = httpMock.expectOne(`${environment.apiBaseUrl}/payments/me`);
     expect(req.request.method).toBe('GET');
-    req.flush([]);
+    const payment = { id: 1, policyId: 1, amount: 100, paymentDate: '2026-01-01', status: 'SUCCESS' };
+    req.flush({ content: [payment], totalElements: 1, totalPages: 1, size: 20, number: 0, first: true, last: true });
+
+    expect(result).toEqual([payment]);
   });
 
   it('downloads the invoice as a blob via HttpClient', () => {
