@@ -41,7 +41,8 @@ export class Shell {
     { label: 'Reports', path: '/reports', icon: '📈', roles: ['CUSTOMER', 'ADMIN'] },
     { label: 'Messages', path: '/messages', icon: '✉️', roles: ALL_ROLES },
     { label: 'Support', path: '/support', icon: '🆘', roles: ALL_ROLES },
-    { label: 'User Management', path: '/admin/users', icon: '⚙️', roles: ['ADMIN'] }
+    { label: 'User Management', path: '/admin/users', icon: '⚙️', roles: ['ADMIN'] },
+    { label: 'Platform Settings', path: '/admin/settings', icon: '🛠️', roles: ['ADMIN'] }
   ];
 
   private readonly navigationEnd = toSignal(

@@ -1,0 +1,66 @@
+<div class="platform-settings">
+  <h1>Platform Settings</h1>
+  <p class="page-note">
+    Settings marked <strong>Read-only</strong> reflect static server configuration and cannot be
+    changed from this screen — they are shown for reference only. Only settings marked
+    <strong>Editable</strong> can be updated here, and take effect immediately.
+  </p>
+
+  <app-loading-spinner *ngIf="loading()"></app-loading-spinner>
+  <app-empty-state
+    *ngIf="!loading() && settings().length === 0"
+    icon="🛠️"
+    title="No settings available"
+  ></app-empty-state>
+
+  <table class="settings-table" *ngIf="!loading() && settings().length">
+    <thead>
+      <tr><th>Setting</th><th>Value</th><th>Type</th><th>Action</th></tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let setting of settings()" [class.read-only-row]="!setting.editable">
+        <td>
+          <div class="setting-key">{{ setting.key }}</div>
+          <div class="setting-description" *ngIf="setting.description">{{ setting.description }}</div>
+        </td>
+        <td>
+          <input
+            *ngIf="setting.editable"
+            class="value-input"
+            [type]="isNumeric(setting) ? 'number' : 'text'"
+            [ngModel]="draftValue(setting)"
+            (ngModelChange)="onDraftChange(setting, $event)"
+            [disabled]="savingKey() === setting.key"
+            [attr.aria-label]="'Value for ' + setting.key"
+          />
+          <span
+            *ngIf="!setting.editable"
+            class="value-static"
+            title="This value comes from static server configuration and is not adjustable here."
+          >{{ setting.value }}</span>
+        </td>
+        <td>
+          <span class="badge" [class.editable]="setting.editable">
+            {{ setting.editable ? 'Editable' : 'Read-only' }}
+          </span>
+        </td>
+        <td>
+          <button
+            *ngIf="setting.editable"
+            type="button"
+            class="save-btn"
+            [disabled]="!canSave(setting)"
+            (click)="save(setting)"
+          >
+            {{ savingKey() === setting.key ? 'Saving...' : 'Save' }}
+          </button>
+          <span
+            *ngIf="!setting.editable"
+            class="no-edit-note"
+            title="This value comes from static server configuration and is not adjustable here."
+          >Server configuration</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
