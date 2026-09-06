@@ -30,6 +30,7 @@ export class Shell {
 
   readonly sidebarOpen = signal(true);
   readonly userMenuOpen = signal(false);
+  readonly notificationsOpen = signal(false);
 
   readonly navItems: NavItem[] = [
     { label: 'Dashboard', path: '/dashboard', icon: '📊', roles: ALL_ROLES },
@@ -57,7 +58,7 @@ export class Shell {
     return match?.label ?? 'Dashboard';
   });
 
-  readonly unreadCount = computed(() => this.notifications.toasts().length);
+  readonly unreadCount = computed(() => this.notifications.unreadCount());
 
   visibleNavItems(): NavItem[] {
     return this.navItems.filter((item) => !item.roles || this.auth.hasAnyRole(item.roles));
@@ -69,6 +70,13 @@ export class Shell {
 
   toggleUserMenu(): void {
     this.userMenuOpen.update((open) => !open);
+  }
+
+  toggleNotifications(): void {
+    this.notificationsOpen.update((open) => !open);
+    if (this.notificationsOpen()) {
+      this.notifications.markAllRead();
+    }
   }
 
   logout(): void {

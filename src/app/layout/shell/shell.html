@@ -27,7 +27,7 @@
       <h1 class="page-title">{{ pageTitle() }}</h1>
       <div class="spacer"></div>
 
-      <button class="bell-btn" aria-label="Notifications">
+      <button class="bell-btn" (click)="toggleNotifications()" aria-label="Notifications">
         🔔
         <span class="bell-badge" *ngIf="unreadCount() > 0">{{ unreadCount() }}</span>
       </button>
