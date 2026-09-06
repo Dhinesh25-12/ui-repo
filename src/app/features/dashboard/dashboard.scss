@@ -1,0 +1,45 @@
+.dashboard { max-width: 1200px; }
+h1 { margin: 0 0 1.25rem; }
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.widgets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.card h2 { margin: 0 0 1rem; font-size: 1rem; color: #374151; }
+
+.bar-row { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.6rem; font-size: 0.85rem; }
+.bar-label { width: 90px; color: #6b7280; }
+.bar-track { flex: 1; background: #f3f4f6; border-radius: 999px; height: 10px; overflow: hidden; }
+.bar-fill { height: 100%; background: #2563eb; border-radius: 999px; }
+.bar-fill.revenue { background: #16a34a; }
+.bar-value { width: 60px; text-align: right; color: #374151; }
+
+.activity ul { list-style: none; margin: 0; padding: 0; }
+.activity li {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 0.85rem;
+}
+.activity time { color: #9ca3af; font-size: 0.75rem; }
+
+@media (max-width: 600px) {
+  .bar-label { width: 60px; }
+}

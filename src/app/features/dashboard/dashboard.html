@@ -1,0 +1,68 @@
+<div class="dashboard">
+  <h1>Dashboard</h1>
+
+  <app-loading-spinner *ngIf="loading()"></app-loading-spinner>
+
+  <app-empty-state
+    *ngIf="!loading() && errored()"
+    icon="⚠️"
+    title="Unable to load dashboard data"
+    subtitle="Please try again later."
+  ></app-empty-state>
+
+  <ng-container *ngIf="!loading() && summary() as data">
+    <section class="kpi-grid">
+      <app-kpi-card label="Total Policies" [value]="data.totalPolicies" icon="📄" accent="blue"></app-kpi-card>
+      <app-kpi-card label="Active Policies" [value]="data.activePolicies" icon="✅" accent="green"></app-kpi-card>
+      <app-kpi-card label="Claims Filed" [value]="data.claimsFiled" icon="🧾" accent="orange"></app-kpi-card>
+      <app-kpi-card label="Total Payments" [value]="'₹' + data.totalPayments" icon="💳" accent="purple"></app-kpi-card>
+    </section>
+
+    <section class="widgets">
+      <div class="card">
+        <h2>Policy Split by Category</h2>
+        <div class="bar-chart" *ngIf="data.policySplit.length; else noSplit">
+          <div class="bar-row" *ngFor="let item of data.policySplit">
+            <span class="bar-label">{{ item.category }}</span>
+            <div class="bar-track">
+              <div class="bar-fill" [style.width.%]="(item.count / maxSplit()) * 100"></div>
+            </div>
+            <span class="bar-value">{{ item.count }}</span>
+          </div>
+        </div>
+        <ng-template #noSplit>
+          <app-empty-state icon="📊" title="No policy data yet"></app-empty-state>
+        </ng-template>
+      </div>
+
+      <div class="card">
+        <h2>Monthly Revenue Trend</h2>
+        <div class="bar-chart" *ngIf="data.revenueTrend.length; else noRevenue">
+          <div class="bar-row" *ngFor="let point of data.revenueTrend">
+            <span class="bar-label">{{ point.month }}</span>
+            <div class="bar-track">
+              <div class="bar-fill revenue" [style.width.%]="(point.revenue / maxRevenue()) * 100"></div>
+            </div>
+            <span class="bar-value">₹{{ point.revenue }}</span>
+          </div>
+        </div>
+        <ng-template #noRevenue>
+          <app-empty-state icon="📈" title="No revenue data yet"></app-empty-state>
+        </ng-template>
+      </div>
+
+      <div class="card activity">
+        <h2>Recent Activity</h2>
+        <ul *ngIf="data.recentActivity.length; else noActivity">
+          <li *ngFor="let activity of data.recentActivity">
+            <span>{{ activity.message }}</span>
+            <time>{{ activity.timestamp }}</time>
+          </li>
+        </ul>
+        <ng-template #noActivity>
+          <app-empty-state icon="🕒" title="No recent activity"></app-empty-state>
+        </ng-template>
+      </div>
+    </section>
+  </ng-container>
+</div>

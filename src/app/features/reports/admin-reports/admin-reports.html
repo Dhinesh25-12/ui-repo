@@ -1,0 +1,69 @@
+<div class="admin-reports">
+  <h1>Admin Reports</h1>
+  <app-loading-spinner *ngIf="loading()"></app-loading-spinner>
+
+  <div class="reports-grid" *ngIf="!loading()">
+    <div class="card">
+      <h2>Premium Collection</h2>
+      <table>
+        <thead><tr><th>Period</th><th>Total Collected</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let row of premiumCollection()">
+            <td>{{ row.period }}</td><td>₹{{ row.totalCollected }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Claims Settlement Ratio</h2>
+      <table>
+        <thead><tr><th>Period</th><th>Filed</th><th>Settled</th><th>Ratio</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let row of claimsRatio()">
+            <td>{{ row.period }}</td><td>{{ row.claimsFiled }}</td><td>{{ row.claimsSettled }}</td>
+            <td>{{ row.settlementRatio * 100 | number:'1.1-1' }}%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Product Performance / Profitability</h2>
+      <table>
+        <thead><tr><th>Product</th><th>Sold</th><th>Premium</th><th>Claims</th><th>Profitability</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let row of productPerformance()">
+            <td>{{ row.productName }}</td><td>{{ row.policiesSold }}</td><td>₹{{ row.totalPremium }}</td>
+            <td>₹{{ row.totalClaims }}</td><td>₹{{ row.profitability }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Monthly Revenue Trend</h2>
+      <div class="bar-chart">
+        <div class="bar-row" *ngFor="let point of monthlyRevenue()">
+          <span class="bar-label">{{ point.month }}</span>
+          <div class="bar-track">
+            <div class="bar-fill" [style.width.%]="(point.revenue / maxRevenue()) * 100"></div>
+          </div>
+          <span class="bar-value">₹{{ point.revenue }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Top 10 Customers by Premium</h2>
+      <table>
+        <thead><tr><th>Customer</th><th>Total Premium Paid</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let row of topCustomers()">
+            <td>{{ row.customerName }}</td><td>₹{{ row.totalPremiumPaid }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,15 @@
+.header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+h1 { margin: 0; }
+.primary-btn { background: #2563eb; color: #fff; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; font-size: 0.9rem; }
+.claim-card { background: #fff; border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+.claim-header { display: flex; justify-content: space-between; align-items: flex-start; }
+h3 { margin: 0; }
+.policy-ref { margin: 0.2rem 0 0; color: #6b7280; font-size: 0.8rem; }
+.description { margin: 0.6rem 0 0.3rem; font-size: 0.9rem; }
+.incident-date { color: #6b7280; font-size: 0.8rem; margin: 0; }
+.tracker { display: flex; gap: 0.5rem; margin-top: 1rem; }
+.tracker-step { flex: 1; text-align: center; opacity: 0.4; }
+.tracker-step.completed { opacity: 1; }
+.dot { display: block; width: 12px; height: 12px; border-radius: 50%; background: #2563eb; margin: 0 auto 0.25rem; }
+.step-label { font-size: 0.65rem; color: #374151; text-transform: capitalize; }
+.rejected-note { color: #dc2626; font-weight: 600; margin-top: 1rem; }

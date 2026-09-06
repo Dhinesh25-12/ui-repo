@@ -1,0 +1,35 @@
+<div class="shell" [class.sidebar-collapsed]="!sidebarOpen()">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-icon">🛡️</span>
+      <span class="brand-text">Insurance Portal</span>
+    </div>
+    <nav class="nav">
+      <a
+        *ngFor="let item of visibleNavItems()"
+        [routerLink]="item.path"
+        routerLinkActive="active"
+        class="nav-item"
+      >
+        <span class="nav-icon">{{ item.icon }}</span>
+        <span class="nav-label">{{ item.label }}</span>
+      </a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="menu-toggle" (click)="toggleSidebar()" aria-label="Toggle navigation">☰</button>
+      <div class="spacer"></div>
+      <div class="user-info" *ngIf="auth.currentUser() as user">
+        <span class="user-name">{{ user.fullName }}</span>
+        <span class="user-roles">{{ user.roles.join(', ') }}</span>
+      </div>
+      <button class="logout-btn" (click)="logout()">Logout</button>
+    </header>
+
+    <main class="content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

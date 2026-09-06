@@ -1,0 +1,37 @@
+<div class="policy-detail">
+  <a routerLink="/policies" class="back-link">&larr; Back to policies</a>
+  <app-loading-spinner *ngIf="loading()"></app-loading-spinner>
+
+  <div class="card" *ngIf="!loading() && policy() as p">
+    <div class="title-row">
+      <h1>{{ p.policyNumber }}</h1>
+      <app-status-badge [status]="p.status"></app-status-badge>
+    </div>
+
+    <dl>
+      <dt>Product</dt><dd>{{ p.productName }}</dd>
+      <dt>Start date</dt><dd>{{ p.startDate }}</dd>
+      <dt>End date</dt><dd>{{ p.endDate }}</dd>
+      <dt>Premium</dt><dd>₹{{ p.premiumAmount }}</dd>
+      <dt>Coverage</dt><dd>₹{{ p.coverageAmount }}</dd>
+      <dt>Nominee</dt><dd>{{ p.nominee?.name }} ({{ p.nominee?.relationship }})</dd>
+    </dl>
+
+    <div class="actions" *ngIf="p.status === 'ACTIVE'">
+      <button (click)="fetchRenewalQuote()">Get renewal quote</button>
+      <button class="secondary" (click)="showCancelForm.set(!showCancelForm())">Request cancellation</button>
+    </div>
+
+    <div class="renewal-quote" *ngIf="renewalQuote() as quote">
+      <p>Renewal premium: <strong>₹{{ quote.renewalPremium }}</strong></p>
+      <p>New end date: {{ quote.newEndDate }}</p>
+      <button (click)="renew()">Confirm renewal</button>
+    </div>
+
+    <div class="cancel-form" *ngIf="showCancelForm()">
+      <label>Reason for cancellation</label>
+      <textarea rows="3" [(ngModel)]="cancelReason"></textarea>
+      <button class="danger" (click)="requestCancellation()">Submit cancellation request</button>
+    </div>
+  </div>
+</div>

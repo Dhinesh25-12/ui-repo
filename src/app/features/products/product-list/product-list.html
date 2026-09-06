@@ -1,0 +1,55 @@
+<div class="product-list">
+  <div class="header-row">
+    <h1>Insurance Products</h1>
+    <a *ngIf="auth.hasRole('ADMIN')" routerLink="/products/admin/new" class="primary-btn">+ New Product</a>
+  </div>
+
+  <div class="filters">
+    <input
+      type="text"
+      placeholder="Search by term..."
+      [(ngModel)]="term"
+      (keyup.enter)="load()"
+    />
+    <select [(ngModel)]="category" (change)="load()">
+      <option value="">All categories</option>
+      <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+    </select>
+    <button (click)="load()">Search</button>
+    <a
+      *ngIf="selectedIds().size > 1"
+      class="compare-btn"
+      [routerLink]="['/products/compare']"
+      [queryParams]="{ ids: compareQueryParam() }"
+    >
+      Compare ({{ selectedIds().size }})
+    </a>
+  </div>
+
+  <app-loading-spinner *ngIf="loading()"></app-loading-spinner>
+
+  <app-empty-state
+    *ngIf="!loading() && products().length === 0"
+    icon="🔍"
+    title="No products found"
+    subtitle="Try adjusting your search or filters."
+  ></app-empty-state>
+
+  <div class="grid" *ngIf="!loading() && products().length">
+    <div class="product-card" *ngFor="let product of products()">
+      <label class="select-check">
+        <input type="checkbox" [checked]="isSelected(product.id)" (change)="toggleSelection(product.id)" />
+        Compare
+      </label>
+      <h3>{{ product.name }}</h3>
+      <p class="category">{{ product.category }}</p>
+      <p class="detail">Coverage: ₹{{ product.coverageAmount }}</p>
+      <p class="detail">Premium: ₹{{ product.premiumAmount }}</p>
+      <p class="detail">Tenure: {{ product.tenureMonths }} months</p>
+      <div class="actions">
+        <a [routerLink]="['/products', product.id]">View details</a>
+        <a *ngIf="auth.hasRole('ADMIN')" [routerLink]="['/products/admin', product.id]">Edit</a>
+      </div>
+    </div>
+  </div>
+</div>
