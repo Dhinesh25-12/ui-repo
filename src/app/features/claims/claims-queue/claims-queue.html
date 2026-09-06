@@ -16,15 +16,23 @@
         <td><app-status-badge [status]="claim.status"></app-status-badge></td>
         <td class="actions">
           <button
+            class="start-review"
+            *ngIf="claim.status === 'SUBMITTED'"
+            [disabled]="!canStartReview(claim)"
+            (click)="startReview(claim)"
+          >
+            Start Review
+          </button>
+          <button
             class="approve"
-            [disabled]="!isDecidable(claim)"
+            [disabled]="!canApprove(claim)"
             (click)="approve(claim)"
           >
             Approve
           </button>
           <button
             class="reject"
-            [disabled]="!isDecidable(claim)"
+            [disabled]="!canReject(claim)"
             (click)="reject(claim)"
           >
             Reject

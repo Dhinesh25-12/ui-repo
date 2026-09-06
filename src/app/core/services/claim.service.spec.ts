@@ -63,11 +63,20 @@ describe('ClaimService', () => {
   });
 
   it('submits a decision to the canonical PUT decision endpoint', () => {
-    service.decide(9, 'APPROVE', 'looks good').subscribe();
+    service.decide(9, 'APPROVED', 'looks good').subscribe();
 
     const req = httpMock.expectOne(`${environment.apiBaseUrl}/claims/9/decision`);
     expect(req.request.method).toBe('PUT');
-    expect(req.request.body).toEqual({ decision: 'APPROVE', remarks: 'looks good' });
+    expect(req.request.body).toEqual({ decision: 'APPROVED', remarks: 'looks good' });
     req.flush({ id: 9, claimNumber: 'CLM-9', policyId: 1, incidentDate: '2026-01-01', description: '', status: 'APPROVED' });
+  });
+
+  it('moves a claim to a new non-terminal status via the PATCH status endpoint', () => {
+    service.updateStatus(9, 'UNDER_REVIEW').subscribe();
+
+    const req = httpMock.expectOne(`${environment.apiBaseUrl}/claims/9/status`);
+    expect(req.request.method).toBe('PATCH');
+    expect(req.request.body).toEqual({ status: 'UNDER_REVIEW', remarks: undefined });
+    req.flush({ id: 9, claimNumber: 'CLM-9', policyId: 1, incidentDate: '2026-01-01', description: '', status: 'UNDER_REVIEW' });
   });
 });
