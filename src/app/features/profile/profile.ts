@@ -14,7 +14,10 @@ export function notInFuture(control: AbstractControl): ValidationErrors | null {
   if (!value) {
     return null;
   }
-  const today = new Date().toISOString().slice(0, 10);
+  const now = new Date();
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(
+    now.getDate()
+  ).padStart(2, '0')}`;
   return value > today ? { futureDate: true } : null;
 }
 
