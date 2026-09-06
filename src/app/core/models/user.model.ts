@@ -6,6 +6,7 @@ export interface AuthUser {
   email: string;
   fullName: string;
   roles: UserRole[];
+  enabled?: boolean;
 }
 
 export interface LoginRequest {

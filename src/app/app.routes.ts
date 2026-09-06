@@ -100,6 +100,16 @@ export const routes: Routes = [
         loadComponent: () => import('./features/profile/profile').then((m) => m.Profile)
       },
       {
+        path: 'messages',
+        data: { title: 'Messages' },
+        loadComponent: () => import('./shared/pages/coming-soon/coming-soon').then((m) => m.ComingSoon)
+      },
+      {
+        path: 'support',
+        data: { title: 'Support' },
+        loadComponent: () => import('./shared/pages/coming-soon/coming-soon').then((m) => m.ComingSoon)
+      },
+      {
         path: 'admin/users',
         canActivate: [roleGuard(['ADMIN'])],
         loadComponent: () =>

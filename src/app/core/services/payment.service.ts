@@ -11,18 +11,23 @@ export class PaymentService {
   constructor(private readonly http: HttpClient) {}
 
   getHistory(): Observable<Payment[]> {
-    return this.http.get<Payment[]>(`${this.baseUrl}/history`);
+    return this.http.get<Payment[]>(`${this.baseUrl}/me`);
   }
 
   pay(payload: PremiumPaymentRequest): Observable<Payment> {
     return this.http.post<Payment>(this.baseUrl, payload);
   }
 
-  getInvoiceUrl(paymentId: number): string {
-    return `${this.baseUrl}/${paymentId}/invoice`;
+  /**
+   * Downloads the invoice as a blob via HttpClient so the auth interceptor
+   * attaches the bearer token. A plain `<a href>` would bypass the
+   * interceptor and 401 against this JWT-protected endpoint.
+   */
+  downloadInvoice(paymentId: number): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/${paymentId}/invoice`, { responseType: 'blob' });
   }
 
-  getReceiptUrl(paymentId: number): string {
-    return `${this.baseUrl}/${paymentId}/receipt`;
+  downloadReceipt(paymentId: number): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/${paymentId}/receipt`, { responseType: 'blob' });
   }
 }

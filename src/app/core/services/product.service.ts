@@ -25,6 +25,13 @@ export class ProductService {
     return this.http.get<Product>(`${this.baseUrl}/${id}`);
   }
 
+  /** Compares multiple products in a single request instead of fetching them one by one. */
+  compare(ids: number[]): Observable<Product[]> {
+    const query = new URLSearchParams();
+    query.set('ids', ids.join(','));
+    return this.http.get<Product[]>(`${this.baseUrl}/compare?${query.toString()}`);
+  }
+
   create(payload: ProductRequest): Observable<Product> {
     return this.http.post<Product>(this.baseUrl, payload);
   }

@@ -33,8 +33,26 @@
         <td>{{ payment.paymentDate }}</td>
         <td>₹{{ payment.amount }}</td>
         <td><app-status-badge [status]="payment.status"></app-status-badge></td>
-        <td><a [href]="invoiceUrl(payment.id)" target="_blank">View invoice</a></td>
-        <td><a [href]="receiptUrl(payment.id)" target="_blank">Download receipt</a></td>
+        <td>
+          <button
+            type="button"
+            class="link-btn"
+            [disabled]="downloadingId() === payment.id"
+            (click)="downloadInvoice(payment)"
+          >
+            View invoice
+          </button>
+        </td>
+        <td>
+          <button
+            type="button"
+            class="link-btn"
+            [disabled]="downloadingId() === payment.id"
+            (click)="downloadReceipt(payment)"
+          >
+            Download receipt
+          </button>
+        </td>
       </tr>
     </tbody>
   </table>

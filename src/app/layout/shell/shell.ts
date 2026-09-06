@@ -1,6 +1,8 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { UserRole } from '../../core/models/user.model';
@@ -20,24 +22,40 @@ interface NavItem {
   styleUrl: './shell.scss'
 })
 export class Shell {
+  private readonly router = inject(Router);
+  private readonly notifications = inject(NotificationService);
+  readonly auth = inject(AuthService);
+
   readonly sidebarOpen = signal(true);
+  readonly userMenuOpen = signal(false);
 
   readonly navItems: NavItem[] = [
     { label: 'Dashboard', path: '/dashboard', icon: '📊' },
-    { label: 'Products', path: '/products', icon: '🛍️' },
-    { label: 'Policies', path: '/policies', icon: '📄' },
-    { label: 'Claims', path: '/claims', icon: '🧾' },
-    { label: 'Payments', path: '/payments', icon: '💳' },
-    { label: 'Reports', path: '/reports', icon: '📈' },
-    { label: 'Profile', path: '/profile', icon: '👤' },
+    { label: 'Policies', path: '/policies', icon: '📄', roles: ['CUSTOMER', 'AGENT', 'ADMIN'] },
+    { label: 'Claims', path: '/claims', icon: '🧾', roles: ['CUSTOMER', 'CLAIMS_OFFICER', 'ADMIN'] },
+    { label: 'Payments', path: '/payments', icon: '💳', roles: ['CUSTOMER', 'ADMIN'] },
+    { label: 'My Profile', path: '/profile', icon: '👤' },
+    { label: 'Reports', path: '/reports', icon: '📈', roles: ['CUSTOMER', 'ADMIN'] },
+    { label: 'Messages', path: '/messages', icon: '✉️' },
+    { label: 'Support', path: '/support', icon: '🆘' },
     { label: 'User Management', path: '/admin/users', icon: '⚙️', roles: ['ADMIN'] }
   ];
 
-  constructor(
-    readonly auth: AuthService,
-    private readonly router: Router,
-    private readonly notifications: NotificationService
-  ) {}
+  private readonly navigationEnd = toSignal(
+    this.router.events.pipe(filter((event) => event instanceof NavigationEnd)),
+    { initialValue: null }
+  );
+
+  readonly pageTitle = computed(() => {
+    this.navigationEnd();
+    const url = this.router.url;
+    const match = this.navItems
+      .filter((item) => url === item.path || url.startsWith(item.path + '/'))
+      .sort((a, b) => b.path.length - a.path.length)[0];
+    return match?.label ?? 'Dashboard';
+  });
+
+  readonly unreadCount = computed(() => this.notifications.toasts().length);
 
   visibleNavItems(): NavItem[] {
     return this.navItems.filter((item) => !item.roles || this.auth.hasAnyRole(item.roles));
@@ -45,6 +63,10 @@ export class Shell {
 
   toggleSidebar(): void {
     this.sidebarOpen.update((open) => !open);
+  }
+
+  toggleUserMenu(): void {
+    this.userMenuOpen.update((open) => !open);
   }
 
   logout(): void {

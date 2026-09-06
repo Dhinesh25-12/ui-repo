@@ -51,4 +51,17 @@ export class UserManagement implements OnInit {
       }
     });
   }
+
+  toggleEnabled(user: AuthUser): void {
+    const enabled = !(user.enabled ?? true);
+    this.userAdminService.setEnabled(user.id, enabled).subscribe({
+      next: (updated) => {
+        this.users.update((current) => current.map((u) => (u.id === updated.id ? updated : u)));
+        this.notifications.success(`${user.username} is now ${enabled ? 'active' : 'suspended'}.`);
+      },
+      error: () => {
+        /* user-facing notification is shown by the global error interceptor */
+      }
+    });
+  }
 }

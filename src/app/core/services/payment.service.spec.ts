@@ -1,0 +1,49 @@
+import { TestBed } from '@angular/core/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { PaymentService } from './payment.service';
+import { environment } from '../../../environments/environment';
+
+describe('PaymentService', () => {
+  let service: PaymentService;
+  let httpMock: HttpTestingController;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [provideHttpClient(), provideHttpClientTesting()]
+    });
+    service = TestBed.inject(PaymentService);
+    httpMock = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => {
+    httpMock.verify();
+  });
+
+  it('fetches payment history from the canonical /me endpoint', () => {
+    service.getHistory().subscribe();
+    const req = httpMock.expectOne(`${environment.apiBaseUrl}/payments/me`);
+    expect(req.request.method).toBe('GET');
+    req.flush([]);
+  });
+
+  it('downloads the invoice as a blob via HttpClient', () => {
+    let result: Blob | undefined;
+    service.downloadInvoice(42).subscribe((blob) => (result = blob));
+
+    const req = httpMock.expectOne(`${environment.apiBaseUrl}/payments/42/invoice`);
+    expect(req.request.method).toBe('GET');
+    expect(req.request.responseType).toBe('blob');
+    const blob = new Blob(['pdf-bytes']);
+    req.flush(blob);
+
+    expect(result).toBe(blob);
+  });
+
+  it('downloads the receipt as a blob via HttpClient', () => {
+    service.downloadReceipt(7).subscribe();
+    const req = httpMock.expectOne(`${environment.apiBaseUrl}/payments/7/receipt`);
+    expect(req.request.responseType).toBe('blob');
+    req.flush(new Blob(['pdf-bytes']));
+  });
+});

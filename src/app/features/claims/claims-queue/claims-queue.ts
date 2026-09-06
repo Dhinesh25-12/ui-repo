@@ -1,7 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ClaimService } from '../../../core/services/claim.service';
-import { Claim, ClaimStatus } from '../../../core/models/claim.model';
+import { Claim } from '../../../core/models/claim.model';
 import { LoadingSpinner } from '../../../shared/components/loading-spinner/loading-spinner';
 import { EmptyState } from '../../../shared/components/empty-state/empty-state';
 import { StatusBadge } from '../../../shared/components/status-badge/status-badge';
@@ -17,7 +17,7 @@ import { NotificationService } from '../../../core/services/notification.service
 export class ClaimsQueue implements OnInit {
   readonly loading = signal(true);
   readonly claims = signal<Claim[]>([]);
-  readonly statuses: ClaimStatus[] = ['SUBMITTED', 'UNDER_REVIEW', 'APPROVED', 'REJECTED', 'SETTLED'];
+  readonly decidingId = signal<number | null>(null);
 
   constructor(
     private readonly claimService: ClaimService,
@@ -39,13 +39,26 @@ export class ClaimsQueue implements OnInit {
     });
   }
 
-  updateStatus(claim: Claim, status: ClaimStatus): void {
-    this.claimService.updateStatus(claim.id, { status }).subscribe({
-      next: () => {
-        this.notifications.success(`Claim ${claim.claimNumber} updated to ${status}.`);
-        this.load();
+  approve(claim: Claim): void {
+    this.decide(claim, 'APPROVE');
+  }
+
+  reject(claim: Claim): void {
+    this.decide(claim, 'REJECT');
+  }
+
+  private decide(claim: Claim, decision: 'APPROVE' | 'REJECT'): void {
+    this.decidingId.set(claim.id);
+    this.claimService.decide(claim.id, decision).subscribe({
+      next: (updated) => {
+        this.decidingId.set(null);
+        this.claims.update((list) => list.map((c) => (c.id === updated.id ? updated : c)));
+        this.notifications.success(
+          `Claim ${claim.claimNumber} ${decision === 'APPROVE' ? 'approved' : 'rejected'}.`
+        );
       },
       error: () => {
+        this.decidingId.set(null);
         /* user-facing notification is shown by the global error interceptor */
       }
     });

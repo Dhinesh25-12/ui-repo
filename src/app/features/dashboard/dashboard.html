@@ -1,5 +1,31 @@
 <div class="dashboard">
-  <h1>Dashboard</h1>
+  <section class="hero">
+    <div class="hero-brand">
+      <div class="brand-title">
+        <span class="brand-icon">🛡️</span>
+        <div>
+          <h1>Insurance Portal</h1>
+          <p class="tagline">Secure today, Protected tomorrow.</p>
+        </div>
+      </div>
+
+      <div class="quick-actions">
+        <a *ngFor="let action of quickActions" [routerLink]="action.link" class="quick-action">
+          <span class="quick-action-icon">{{ action.icon }}</span>
+          <span>{{ action.label }}</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-illustration" aria-hidden="true">
+      <span class="illustration-icon">☂️</span>
+      <span class="illustration-icon secondary">👨‍👩‍👧</span>
+    </div>
+  </section>
+
+  <div class="page-title-row">
+    <h2>Dashboard</h2>
+  </div>
 
   <app-loading-spinner *ngIf="loading()"></app-loading-spinner>
 
@@ -9,30 +35,62 @@
     title="Unable to load dashboard data"
     subtitle="Please try again later."
   ></app-empty-state>
+  <button class="retry-btn" *ngIf="!loading() && errored()" (click)="load()">Retry</button>
 
-  <ng-container *ngIf="!loading() && summary() as data">
+  <ng-container *ngIf="!loading() && !errored() && summary() as data">
     <section class="kpi-grid">
-      <app-kpi-card label="Total Policies" [value]="data.totalPolicies" icon="📄" accent="blue"></app-kpi-card>
-      <app-kpi-card label="Active Policies" [value]="data.activePolicies" icon="✅" accent="green"></app-kpi-card>
-      <app-kpi-card label="Claims Filed" [value]="data.claimsFiled" icon="🧾" accent="orange"></app-kpi-card>
-      <app-kpi-card label="Total Payments" [value]="'₹' + data.totalPayments" icon="💳" accent="purple"></app-kpi-card>
+      <app-kpi-card
+        label="Total Policies"
+        [value]="data.totalPolicies"
+        icon="📄"
+        accent="blue"
+        link="/policies"
+      ></app-kpi-card>
+      <app-kpi-card
+        label="Active Policies"
+        [value]="data.activePolicies"
+        icon="✅"
+        accent="green"
+        link="/policies"
+      ></app-kpi-card>
+      <app-kpi-card
+        label="Claims Filed"
+        [value]="data.claimsFiled"
+        icon="🧾"
+        accent="orange"
+        link="/claims"
+      ></app-kpi-card>
+      <app-kpi-card
+        label="Total Payments"
+        [value]="'₹' + data.totalPayments"
+        icon="💳"
+        accent="purple"
+        link="/payments"
+      ></app-kpi-card>
     </section>
 
     <section class="widgets">
-      <div class="card">
-        <h2>Policy Split by Category</h2>
-        <div class="bar-chart" *ngIf="data.policySplit.length; else noSplit">
-          <div class="bar-row" *ngFor="let item of data.policySplit">
-            <span class="bar-label">{{ item.category }}</span>
-            <div class="bar-track">
-              <div class="bar-fill" [style.width.%]="(item.count / maxSplit()) * 100"></div>
+      <div class="card donut-card">
+        <h2>Policy Overview</h2>
+        <div class="donut-wrapper" *ngIf="data.policySplit.length; else noSplit">
+          <div class="donut" [style.background]="donutGradient()">
+            <div class="donut-center">
+              <span class="donut-total">{{ totalSplit() }}</span>
+              <span class="donut-label">Total Policies</span>
             </div>
-            <span class="bar-value">{{ item.count }}</span>
           </div>
+          <ul class="legend">
+            <li *ngFor="let item of data.policySplit; let i = index">
+              <span class="swatch" [style.background]="sliceColor(i)"></span>
+              {{ item.category }}
+              <span class="legend-count">{{ item.count }}</span>
+            </li>
+          </ul>
         </div>
         <ng-template #noSplit>
           <app-empty-state icon="📊" title="No policy data yet"></app-empty-state>
         </ng-template>
+        <a routerLink="/policies" class="widget-link">View Policy Details &rarr;</a>
       </div>
 
       <div class="card">
@@ -52,16 +110,36 @@
       </div>
 
       <div class="card activity">
-        <h2>Recent Activity</h2>
+        <h2>Recent Activities</h2>
         <ul *ngIf="data.recentActivity.length; else noActivity">
           <li *ngFor="let activity of data.recentActivity">
-            <span>{{ activity.message }}</span>
-            <time>{{ activity.timestamp }}</time>
+            <span class="activity-icon">{{ activityIcon(activity) }}</span>
+            <div class="activity-body">
+              <p class="activity-title">{{ activityTitle(activity) }}</p>
+              <p class="activity-subtitle" *ngIf="activityDescription(activity)">
+                {{ activityDescription(activity) }}
+              </p>
+            </div>
+            <div class="activity-meta">
+              <span class="activity-amount" *ngIf="activityAmountLabel(activity)">
+                {{ activityAmountLabel(activity) }}
+              </span>
+              <time>{{ activity.timestamp }}</time>
+            </div>
           </li>
         </ul>
         <ng-template #noActivity>
           <app-empty-state icon="🕒" title="No recent activity"></app-empty-state>
         </ng-template>
+        <a routerLink="/claims" class="widget-link">View All Activities &rarr;</a>
+      </div>
+    </section>
+
+    <section class="feature-strip">
+      <div class="feature-card" *ngFor="let feature of featureHighlights">
+        <span class="feature-icon">{{ feature.icon }}</span>
+        <h3>{{ feature.title }}</h3>
+        <p>{{ feature.description }}</p>
       </div>
     </section>
   </ng-container>

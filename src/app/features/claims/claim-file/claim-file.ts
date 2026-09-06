@@ -6,7 +6,6 @@ import { ClaimService } from '../../../core/services/claim.service';
 import { PolicyService } from '../../../core/services/policy.service';
 import { Policy } from '../../../core/models/policy.model';
 import { NotificationService } from '../../../core/services/notification.service';
-import { ClaimDocumentMeta } from '../../../core/models/claim.model';
 
 @Component({
   selector: 'app-claim-file',
@@ -19,7 +18,7 @@ export class ClaimFile implements OnInit {
   private readonly fb = inject(FormBuilder);
   readonly submitting = signal(false);
   readonly policies = signal<Policy[]>([]);
-  readonly documents = signal<ClaimDocumentMeta[]>([]);
+  readonly selectedFiles = signal<File[]>([]);
 
   readonly form = this.fb.nonNullable.group({
     policyId: [0, [Validators.required, Validators.min(1)]],
@@ -46,9 +45,7 @@ export class ClaimFile implements OnInit {
   onFilesSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     const files = input.files ? Array.from(input.files) : [];
-    this.documents.set(
-      files.map((file) => ({ fileName: file.name, fileType: file.type, fileSize: file.size }))
-    );
+    this.selectedFiles.set(files);
   }
 
   submit(): void {
@@ -59,7 +56,7 @@ export class ClaimFile implements OnInit {
 
     this.submitting.set(true);
     this.claimService
-      .fileClaim({ ...this.form.getRawValue(), documents: this.documents() })
+      .fileClaim(this.form.getRawValue(), this.selectedFiles())
       .subscribe({
         next: (claim) => {
           this.submitting.set(false);

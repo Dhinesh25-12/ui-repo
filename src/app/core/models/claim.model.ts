@@ -23,7 +23,13 @@ export interface FileClaimRequest {
   policyId: number;
   incidentDate: string;
   description: string;
-  documents?: ClaimDocumentMeta[];
+}
+
+export type ClaimDecisionAction = 'APPROVE' | 'REJECT';
+
+export interface ClaimDecisionRequest {
+  decision: ClaimDecisionAction;
+  remarks?: string;
 }
 
 export interface ClaimStatusUpdateRequest {

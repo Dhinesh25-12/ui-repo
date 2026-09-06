@@ -11,7 +11,7 @@ export class PolicyService {
   constructor(private readonly http: HttpClient) {}
 
   getMyPolicies(): Observable<Policy[]> {
-    return this.http.get<Policy[]>(`${this.baseUrl}/my`);
+    return this.http.get<Policy[]>(`${this.baseUrl}/me`);
   }
 
   getAll(): Observable<Policy[]> {
@@ -23,7 +23,7 @@ export class PolicyService {
   }
 
   purchase(payload: PurchasePolicyRequest): Observable<Policy> {
-    return this.http.post<Policy>(this.baseUrl, payload);
+    return this.http.post<Policy>(`${this.baseUrl}/purchase`, payload);
   }
 
   getRenewalQuote(id: number): Observable<RenewalQuote> {
@@ -35,7 +35,7 @@ export class PolicyService {
   }
 
   requestCancellation(id: number, payload: CancellationRequestPayload): Observable<Policy> {
-    return this.http.post<Policy>(`${this.baseUrl}/${id}/cancellation-request`, payload);
+    return this.http.post<Policy>(`${this.baseUrl}/${id}/cancel`, payload);
   }
 
   getPendingCancellations(): Observable<Policy[]> {
@@ -43,7 +43,7 @@ export class PolicyService {
   }
 
   approveCancellation(id: number): Observable<Policy> {
-    return this.http.post<Policy>(`${this.baseUrl}/${id}/cancellation-approve`, {});
+    return this.http.post<Policy>(`${this.baseUrl}/${id}/cancel/approve`, {});
   }
 
   rejectCancellation(id: number): Observable<Policy> {
