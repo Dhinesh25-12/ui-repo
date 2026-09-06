@@ -50,9 +50,7 @@ export class ClaimsQueue implements OnInit {
   }
 
   isDecidable(claim: Claim): boolean {
-    const decidingId = this.decidingId();
-    const noDecisionInFlight = decidingId === null || decidingId === claim.id;
-    return noDecisionInFlight && !TERMINAL_STATUSES.includes(claim.status);
+    return this.decidingId() === null && !TERMINAL_STATUSES.includes(claim.status);
   }
 
   private decide(claim: Claim, decision: 'APPROVE' | 'REJECT'): void {
