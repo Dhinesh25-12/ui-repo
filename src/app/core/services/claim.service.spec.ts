@@ -63,11 +63,11 @@ describe('ClaimService', () => {
   });
 
   it('submits a decision to the canonical PUT decision endpoint', () => {
-    service.decide(9, 'APPROVE', 'looks good').subscribe();
+    service.decide(9, 'APPROVED', 'looks good').subscribe();
 
     const req = httpMock.expectOne(`${environment.apiBaseUrl}/claims/9/decision`);
     expect(req.request.method).toBe('PUT');
-    expect(req.request.body).toEqual({ decision: 'APPROVE', remarks: 'looks good' });
+    expect(req.request.body).toEqual({ decision: 'APPROVED', remarks: 'looks good' });
     req.flush({ id: 9, claimNumber: 'CLM-9', policyId: 1, incidentDate: '2026-01-01', description: '', status: 'APPROVED' });
   });
 

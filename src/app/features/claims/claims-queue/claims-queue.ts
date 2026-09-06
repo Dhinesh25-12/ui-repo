@@ -57,11 +57,11 @@ export class ClaimsQueue implements OnInit {
   }
 
   approve(claim: Claim): void {
-    this.decide(claim, 'APPROVE');
+    this.decide(claim, 'APPROVED');
   }
 
   reject(claim: Claim): void {
-    this.decide(claim, 'REJECT');
+    this.decide(claim, 'REJECTED');
   }
 
   /** Claims must be moved to UNDER_REVIEW (via startReview) before they can be approved. */
@@ -77,14 +77,14 @@ export class ClaimsQueue implements OnInit {
     return this.decidingId() === null && !TERMINAL_STATUSES.includes(claim.status);
   }
 
-  private decide(claim: Claim, decision: 'APPROVE' | 'REJECT'): void {
+  private decide(claim: Claim, decision: 'APPROVED' | 'REJECTED'): void {
     this.decidingId.set(claim.id);
     this.claimService.decide(claim.id, decision).subscribe({
       next: (updated) => {
         this.decidingId.set(null);
         this.claims.update((list) => list.map((c) => (c.id === updated.id ? updated : c)));
         this.notifications.success(
-          `Claim ${claim.claimNumber} ${decision === 'APPROVE' ? 'approved' : 'rejected'}.`
+          `Claim ${claim.claimNumber} ${decision === 'APPROVED' ? 'approved' : 'rejected'}.`
         );
       },
       error: () => {
