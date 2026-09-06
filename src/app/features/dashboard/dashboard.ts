@@ -1,5 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { KpiCard } from '../../shared/components/kpi-card/kpi-card';
 import { LoadingSpinner } from '../../shared/components/loading-spinner/loading-spinner';
@@ -40,6 +41,7 @@ export class Dashboard implements OnInit {
   readonly loading = signal(true);
   readonly summary = signal<DashboardSummary | null>(null);
   readonly errored = signal(false);
+  readonly forbidden = signal(false);
   readonly donutColors = DONUT_COLORS;
 
   readonly quickActions: QuickAction[] = [
@@ -68,13 +70,27 @@ export class Dashboard implements OnInit {
   load(): void {
     this.loading.set(true);
     this.errored.set(false);
+    this.forbidden.set(false);
+
+    // The dashboard summary endpoint is Admin-only; short-circuit for
+    // non-Admins to avoid an unnecessary round-trip and console 403 noise.
+    if (!this.auth.hasRole('ADMIN')) {
+      this.forbidden.set(true);
+      this.loading.set(false);
+      return;
+    }
+
     this.dashboardService.getSummary().subscribe({
       next: (summary) => {
         this.summary.set(summary);
         this.loading.set(false);
       },
-      error: () => {
-        this.errored.set(true);
+      error: (error: HttpErrorResponse) => {
+        if (error.status === 403) {
+          this.forbidden.set(true);
+        } else {
+          this.errored.set(true);
+        }
         this.loading.set(false);
       }
     });

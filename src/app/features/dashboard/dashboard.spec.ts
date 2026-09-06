@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { of } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 import { Dashboard } from './dashboard';
 import { DashboardService } from '../../core/services/dashboard.service';
@@ -31,16 +32,18 @@ const MOCKUP_SPLIT = [
 
 describe('Dashboard', () => {
   let dashboardServiceStub: { getSummary: ReturnType<typeof vi.fn> };
+  let authServiceStub: { hasRole: ReturnType<typeof vi.fn> };
 
   beforeEach(async () => {
     dashboardServiceStub = { getSummary: vi.fn().mockReturnValue(of(summaryWith([]))) };
+    authServiceStub = { hasRole: vi.fn().mockReturnValue(true) };
 
     await TestBed.configureTestingModule({
       imports: [Dashboard],
       providers: [
         provideRouter([]),
         { provide: DashboardService, useValue: dashboardServiceStub },
-        { provide: AuthService, useValue: {} }
+        { provide: AuthService, useValue: authServiceStub }
       ]
     }).compileComponents();
   });
@@ -92,5 +95,51 @@ describe('Dashboard', () => {
     const element = renderWith([]);
     expect(element.querySelector('.legend')).toBeNull();
     expect(element.querySelector('.donut-card app-empty-state')).not.toBeNull();
+  });
+
+  describe('permission handling', () => {
+    it('short-circuits to the forbidden state without calling the API for a non-Admin user', () => {
+      authServiceStub.hasRole.mockReturnValue(false);
+
+      const fixture = TestBed.createComponent(Dashboard);
+      fixture.detectChanges();
+      const element = fixture.nativeElement as HTMLElement;
+
+      expect(dashboardServiceStub.getSummary).not.toHaveBeenCalled();
+      expect(fixture.componentInstance.forbidden()).toBe(true);
+      expect(fixture.componentInstance.errored()).toBe(false);
+      expect(element.querySelector('.empty-title')?.textContent?.trim()).toBe('Dashboard access restricted');
+      expect(element.querySelector('.retry-btn')).toBeNull();
+    });
+
+    it('sets forbidden (not errored) when the API responds with a 403', () => {
+      dashboardServiceStub.getSummary.mockReturnValue(
+        throwError(() => new HttpErrorResponse({ status: 403 }))
+      );
+
+      const fixture = TestBed.createComponent(Dashboard);
+      fixture.detectChanges();
+      const element = fixture.nativeElement as HTMLElement;
+
+      expect(fixture.componentInstance.forbidden()).toBe(true);
+      expect(fixture.componentInstance.errored()).toBe(false);
+      expect(element.querySelector('.empty-title')?.textContent?.trim()).toBe('Dashboard access restricted');
+      expect(element.querySelector('.retry-btn')).toBeNull();
+    });
+
+    it('sets errored (with Retry available) for a non-403 failure', () => {
+      dashboardServiceStub.getSummary.mockReturnValue(
+        throwError(() => new HttpErrorResponse({ status: 500 }))
+      );
+
+      const fixture = TestBed.createComponent(Dashboard);
+      fixture.detectChanges();
+      const element = fixture.nativeElement as HTMLElement;
+
+      expect(fixture.componentInstance.errored()).toBe(true);
+      expect(fixture.componentInstance.forbidden()).toBe(false);
+      expect(element.querySelector('.empty-title')?.textContent?.trim()).toBe('Unable to load dashboard data');
+      expect(element.querySelector('.retry-btn')).not.toBeNull();
+    });
   });
 });
