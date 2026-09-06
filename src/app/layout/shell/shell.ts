@@ -1,11 +1,13 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, HostListener, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { UserRole } from '../../core/models/user.model';
+
+export const MOBILE_BREAKPOINT = 768
 
 interface NavItem {
   label: string;
@@ -28,9 +30,11 @@ export class Shell {
   private readonly notifications = inject(NotificationService);
   readonly auth = inject(AuthService);
 
-  readonly sidebarOpen = signal(true);
+   readonly sidebarOpen = signal(this.getInitialSidebarState());
   readonly userMenuOpen = signal(false);
   readonly notificationsOpen = signal(false);
+
+  private lastWidth = typeof window !== 'undefined' ? window.innerWidth : 1024;
 
   readonly navItems: NavItem[] = [
     { label: 'Dashboard', path: '/dashboard', icon: '📊', roles: ALL_ROLES },
@@ -62,12 +66,51 @@ export class Shell {
 
   readonly unreadCount = computed(() => this.notifications.unreadCount());
 
+  constructor() {
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed()
+      )
+      .subscribe(() => {
+        if (this.isMobile()) {
+          this.closeSidebar();
+        }
+      });
+  }
+  isMobile(): boolean {
+    return typeof window !== 'undefined' ? window.innerWidth <= MOBILE_BREAKPOINT : false;
+  }
+  private getInitialSidebarState(): boolean {
+    return !this.isMobile();
+  }
+  @HostListener('window:resize')
+  onResize(): void {
+    if (typeof window === 'undefined') return;
+    const currentWidth = window.innerWidth;
+    const wasMobile = this.lastWidth <= MOBILE_BREAKPOINT;
+    const isNowMobile = currentWidth <= MOBILE_BREAKPOINT;
+    if (wasMobile !== isNowMobile) {
+      this.sidebarOpen.set(!isNowMobile);
+    }
+    this.lastWidth = currentWidth;
+  }
+
   visibleNavItems(): NavItem[] {
     return this.navItems.filter((item) => !item.roles || this.auth.hasAnyRole(item.roles));
   }
 
   toggleSidebar(): void {
     this.sidebarOpen.update((open) => !open);
+  }
+
+  closeSidebar(): void {
+    this.sidebarOpen.set(false);
+  }
+  closeSidebarOnMobile(): void {
+    if (this.isMobile()) {
+      this.closeSidebar();
+    }
   }
 
   toggleUserMenu(): void {
@@ -85,6 +128,9 @@ export class Shell {
   }
 
   logout(): void {
+    if (this.isMobile()) {
+      this.closeSidebar();
+    }
     this.auth.logout();
     this.notifications.info('You have been logged out.');
     this.router.navigate(['/auth/login']);

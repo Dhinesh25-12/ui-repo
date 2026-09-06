@@ -1,4 +1,10 @@
 <div class="shell" [class.sidebar-collapsed]="!sidebarOpen()">
+    <div
+    class="sidebar-backdrop"
+    *ngIf="sidebarOpen()"
+    (click)="closeSidebar()"
+    aria-hidden="true"
+  ></div>
   <aside class="sidebar">
     <div class="brand">
       <span class="brand-icon">🛡️</span>
@@ -10,6 +16,7 @@
         [routerLink]="item.path"
         routerLinkActive="active"
         class="nav-item"
+         (click)="closeSidebarOnMobile()"
       >
         <span class="nav-icon">{{ item.icon }}</span>
         <span class="nav-label">{{ item.label }}</span>
@@ -42,7 +49,7 @@
           <span class="caret">▾</span>
         </button>
         <div class="user-dropdown" *ngIf="userMenuOpen()">
-          <a routerLink="/profile" (click)="toggleUserMenu()">My Profile</a>
+         <a routerLink="/profile" (click)="toggleUserMenu(); closeSidebarOnMobile()">My Profile</a>
           <button (click)="logout()">Logout</button>
         </div>
       </div>
