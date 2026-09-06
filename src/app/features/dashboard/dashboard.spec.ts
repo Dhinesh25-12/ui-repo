@@ -66,7 +66,7 @@ describe('Dashboard', () => {
     expect(element.querySelector('.donut-card h2')?.textContent?.trim()).toBe('Policy Overview by Product');
   });
 
-  it('assigns a distinct swatch color to each category', () => {
+  it('assigns distinct swatch colors while categories fit within the palette', () => {
     const element = renderWith(MOCKUP_SPLIT);
 
     const colors = Array.from(element.querySelectorAll<HTMLElement>('.legend .swatch')).map(
