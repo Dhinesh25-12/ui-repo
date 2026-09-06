@@ -70,4 +70,13 @@ describe('ClaimService', () => {
     expect(req.request.body).toEqual({ decision: 'APPROVE', remarks: 'looks good' });
     req.flush({ id: 9, claimNumber: 'CLM-9', policyId: 1, incidentDate: '2026-01-01', description: '', status: 'APPROVED' });
   });
+
+  it('moves a claim to a new non-terminal status via the PATCH status endpoint', () => {
+    service.updateStatus(9, 'UNDER_REVIEW').subscribe();
+
+    const req = httpMock.expectOne(`${environment.apiBaseUrl}/claims/9/status`);
+    expect(req.request.method).toBe('PATCH');
+    expect(req.request.body).toEqual({ status: 'UNDER_REVIEW', remarks: undefined });
+    req.flush({ id: 9, claimNumber: 'CLM-9', policyId: 1, incidentDate: '2026-01-01', description: '', status: 'UNDER_REVIEW' });
+  });
 });

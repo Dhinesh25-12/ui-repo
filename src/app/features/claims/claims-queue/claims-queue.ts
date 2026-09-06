@@ -41,26 +41,50 @@ export class ClaimsQueue implements OnInit {
     });
   }
 
+  startReview(claim: Claim): void {
+    this.decidingId.set(claim.id);
+    this.claimService.updateStatus(claim.id, 'UNDER_REVIEW').subscribe({
+      next: (updated) => {
+        this.decidingId.set(null);
+        this.claims.update((list) => list.map((c) => (c.id === updated.id ? updated : c)));
+        this.notifications.success(`Claim ${claim.claimNumber} moved to review.`);
+      },
+      error: () => {
+        this.decidingId.set(null);
+        /* user-facing notification is shown by the global error interceptor */
+      }
+    });
+  }
+
   approve(claim: Claim): void {
-    this.decide(claim, 'APPROVED');
+    this.decide(claim, 'APPROVE');
   }
 
   reject(claim: Claim): void {
-    this.decide(claim, 'REJECTED');
+    this.decide(claim, 'REJECT');
   }
 
-  isDecidable(claim: Claim): boolean {
+  /** Claims must be moved to UNDER_REVIEW (via startReview) before they can be approved. */
+  canStartReview(claim: Claim): boolean {
+    return this.decidingId() === null && claim.status === 'SUBMITTED';
+  }
+
+  canApprove(claim: Claim): boolean {
+    return this.decidingId() === null && claim.status === 'UNDER_REVIEW';
+  }
+
+  canReject(claim: Claim): boolean {
     return this.decidingId() === null && !TERMINAL_STATUSES.includes(claim.status);
   }
 
-  private decide(claim: Claim, decision: 'APPROVED' | 'REJECTED'): void {
+  private decide(claim: Claim, decision: 'APPROVE' | 'REJECT'): void {
     this.decidingId.set(claim.id);
     this.claimService.decide(claim.id, decision).subscribe({
       next: (updated) => {
         this.decidingId.set(null);
         this.claims.update((list) => list.map((c) => (c.id === updated.id ? updated : c)));
         this.notifications.success(
-          `Claim ${claim.claimNumber} ${decision === 'APPROVED' ? 'approved' : 'rejected'}.`
+          `Claim ${claim.claimNumber} ${decision === 'APPROVE' ? 'approved' : 'rejected'}.`
         );
       },
       error: () => {

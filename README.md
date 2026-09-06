@@ -118,7 +118,7 @@ match the actual backend if endpoint names differ):
   `POST /policies/:id/cancellation-request`, `GET /policies/cancellation-requests`,
   `POST /policies/:id/cancellation-approve`, `POST /policies/:id/cancellation-reject`
 - `GET /claims/my`, `GET /claims/queue`, `POST /claims`,
-  `PATCH /claims/:id/status`
+  `PATCH /claims/:id/status`, `PUT /claims/:id/decision`
 - `GET /payments/history`, `POST /payments`,
   `GET /payments/:id/invoice`, `GET /payments/:id/receipt`
 - `GET /dashboard/summary`

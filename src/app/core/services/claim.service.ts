@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { Claim, ClaimDecisionAction, FileClaimRequest } from '../models/claim.model';
+import { Claim, ClaimDecisionAction, ClaimStatus, FileClaimRequest } from '../models/claim.model';
 import { PageResponse } from '../models/customer.model';
 
 @Injectable({ providedIn: 'root' })
@@ -40,6 +40,14 @@ export class ClaimService {
   }
 
   decide(id: number, decision: ClaimDecisionAction, remarks?: string): Observable<Claim> {
-    return this.http.put<Claim>(`${this.baseUrl}/${id}/decision`, { status: decision, remarks });
+    return this.http.put<Claim>(`${this.baseUrl}/${id}/decision`, { decision, remarks });
+  }
+
+  /**
+   * Moves a claim to a new non-terminal status (e.g. SUBMITTED -> UNDER_REVIEW)
+   * ahead of a final decision. Final decisions (approve/reject) go through `decide()`.
+   */
+  updateStatus(id: number, status: ClaimStatus, remarks?: string): Observable<Claim> {
+    return this.http.patch<Claim>(`${this.baseUrl}/${id}/status`, { status, remarks });
   }
 }

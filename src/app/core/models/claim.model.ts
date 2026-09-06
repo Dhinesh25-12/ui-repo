@@ -25,10 +25,10 @@ export interface FileClaimRequest {
   description: string;
 }
 
-export type ClaimDecisionAction = 'APPROVED' | 'REJECTED';
+export type ClaimDecisionAction = 'APPROVE' | 'REJECT';
 
 export interface ClaimDecisionRequest {
-  status: ClaimDecisionAction;
+  decision: ClaimDecisionAction;
   remarks?: string;
 }
 
