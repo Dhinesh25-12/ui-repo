@@ -1,12 +1,106 @@
 <div class="profile">
   <h1>My Profile</h1>
 
-  <div class="card" *ngIf="auth.currentUser() as user">
-    <dl>
-      <dt>Full name</dt><dd>{{ user.fullName }}</dd>
-      <dt>Username</dt><dd>{{ user.username }}</dd>
-      <dt>Email</dt><dd>{{ user.email }}</dd>
-      <dt>Roles</dt><dd>{{ user.roles.join(', ') }}</dd>
-    </dl>
-  </div>
+  <app-loading-spinner *ngIf="loading()"></app-loading-spinner>
+
+  <ng-container *ngIf="!loading()">
+    <div class="card account" *ngIf="profile() as user">
+      <dl>
+        <dt>Username</dt><dd>{{ user.username }}</dd>
+        <dt>Email</dt><dd>{{ user.email }}</dd>
+        <dt>Roles</dt><dd>{{ user.roles.join(', ') }}</dd>
+      </dl>
+    </div>
+
+    <form class="card" [formGroup]="form" (ngSubmit)="submit()">
+      <h2>Basic information</h2>
+
+      <label for="firstName">First name</label>
+      <input id="firstName" type="text" formControlName="firstName" />
+      <p class="error" *ngIf="form.get('firstName')?.touched && form.get('firstName')?.invalid">
+        First name is required.
+      </p>
+
+      <label for="lastName">Last name</label>
+      <input id="lastName" type="text" formControlName="lastName" />
+      <p class="error" *ngIf="form.get('lastName')?.touched && form.get('lastName')?.invalid">
+        Last name is required.
+      </p>
+
+      <label for="phone">Phone</label>
+      <input id="phone" type="tel" formControlName="phone" />
+
+      <h2>Address</h2>
+
+      <label for="address">Address</label>
+      <input id="address" type="text" formControlName="address" />
+
+      <label for="city">City</label>
+      <input id="city" type="text" formControlName="city" />
+
+      <label for="state">State</label>
+      <input id="state" type="text" formControlName="state" />
+
+      <label for="postalCode">Postal code</label>
+      <input id="postalCode" type="text" formControlName="postalCode" />
+
+      <ng-container *ngIf="isCustomer()">
+        <h2>KYC details</h2>
+
+        <label for="dateOfBirth">Date of birth</label>
+        <input id="dateOfBirth" type="date" formControlName="dateOfBirth" />
+        <p class="error" *ngIf="form.get('dateOfBirth')?.touched && form.get('dateOfBirth')?.hasError('futureDate')">
+          Date of birth cannot be in the future.
+        </p>
+
+        <label for="kycIdType">ID type</label>
+        <select id="kycIdType" formControlName="kycIdType">
+          <option value="">Not provided</option>
+          <option *ngFor="let type of kycIdTypes" [value]="type">{{ type }}</option>
+        </select>
+
+        <label for="kycIdNumber">ID number</label>
+        <input id="kycIdNumber" type="text" formControlName="kycIdNumber" />
+        <p class="error" *ngIf="form.get('kycIdNumber')?.touched && form.get('kycIdNumber')?.hasError('maxlength')">
+          ID number must be at most 100 characters.
+        </p>
+      </ng-container>
+
+      <div class="actions">
+        <button type="submit" [disabled]="saving()">{{ saving() ? 'Saving...' : 'Save changes' }}</button>
+      </div>
+    </form>
+
+    <form class="card" [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+      <h2>Change password</h2>
+
+      <label for="currentPassword">Current password</label>
+      <input id="currentPassword" type="password" formControlName="currentPassword" />
+      <p class="error" *ngIf="currentPasswordError() as message">{{ message }}</p>
+      <p
+        class="error"
+        *ngIf="passwordForm.get('currentPassword')?.touched && passwordForm.get('currentPassword')?.invalid"
+      >
+        Current password is required.
+      </p>
+
+      <label for="newPassword">New password</label>
+      <input id="newPassword" type="password" formControlName="newPassword" />
+      <p class="error" *ngIf="passwordForm.get('newPassword')?.touched && passwordForm.get('newPassword')?.invalid">
+        Password must be at least 6 characters.
+      </p>
+
+      <label for="confirmPassword">Confirm new password</label>
+      <input id="confirmPassword" type="password" formControlName="confirmPassword" />
+      <p class="error" *ngIf="passwordForm.touched && passwordForm.hasError('passwordMismatch')">
+        Passwords do not match.
+      </p>
+
+      <div class="actions">
+        <button type="submit" [disabled]="changingPassword()">
+          {{ changingPassword() ? 'Updating...' : 'Update password' }}
+        </button>
+      </div>
+    </form>
+  </ng-container>
 </div>
