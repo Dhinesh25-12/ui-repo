@@ -30,14 +30,21 @@
   <app-loading-spinner *ngIf="loading()"></app-loading-spinner>
 
   <app-empty-state
-    *ngIf="!loading() && errored()"
+    *ngIf="!loading() && forbidden()"
+    icon="🔒"
+    title="Dashboard access restricted"
+    subtitle="Only Administrators can view the dashboard overview. Contact your administrator if you believe this is a mistake."
+  ></app-empty-state>
+
+  <app-empty-state
+    *ngIf="!loading() && errored() && !forbidden()"
     icon="⚠️"
     title="Unable to load dashboard data"
     subtitle="Please try again later."
   ></app-empty-state>
-  <button class="retry-btn" *ngIf="!loading() && errored()" (click)="load()">Retry</button>
+  <button class="retry-btn" *ngIf="!loading() && errored() && !forbidden()" (click)="load()">Retry</button>
 
-  <ng-container *ngIf="!loading() && !errored() && summary() as data">
+  <ng-container *ngIf="!loading() && !errored() && !forbidden() && summary() as data">
     <section class="kpi-grid">
       <app-kpi-card
         label="Total Policies"
