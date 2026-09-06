@@ -5,7 +5,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProductService } from '../../../core/services/product.service';
 import { PolicyService } from '../../../core/services/policy.service';
 import { Product } from '../../../core/models/product.model';
-import { Policy } from '../../../core/models/policy.model';
+import { Policy, PurchasePolicyRequest } from '../../../core/models/policy.model';
 import { LoadingSpinner } from '../../../shared/components/loading-spinner/loading-spinner';
 
 @Component({
@@ -27,7 +27,6 @@ export class PolicyPurchase implements OnInit {
     nominee: this.fb.nonNullable.group({
       name: ['', Validators.required],
       relationship: ['', Validators.required],
-      dateOfBirth: ['', Validators.required],
       contactNumber: ['']
     })
   });
@@ -60,12 +59,27 @@ export class PolicyPurchase implements OnInit {
     }
 
     this.submitting.set(true);
-    this.policyService.purchase(this.form.getRawValue()).subscribe({
+    this.policyService.purchase(this.buildPayload()).subscribe({
       next: (policy) => {
         this.submitting.set(false);
         this.confirmedPolicy.set(policy);
       },
       error: () => this.submitting.set(false)
     });
+  }
+
+  /**
+   * The form groups the nominee fields for layout only; the backend expects a
+   * flat body (`nomineeName`/`nomineeRelationship`/`nomineeContact`), so the
+   * grouped value is flattened here before it is sent.
+   */
+  private buildPayload(): PurchasePolicyRequest {
+    const raw = this.form.getRawValue();
+    return {
+      productId: raw.productId,
+      nomineeName: raw.nominee.name.trim(),
+      nomineeRelationship: raw.nominee.relationship.trim(),
+      nomineeContact: raw.nominee.contactNumber.trim()
+    };
   }
 }
