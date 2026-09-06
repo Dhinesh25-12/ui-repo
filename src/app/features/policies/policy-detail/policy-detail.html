@@ -14,7 +14,7 @@
       <dt>End date</dt><dd>{{ p.endDate }}</dd>
       <dt>Premium</dt><dd>₹{{ p.premiumAmount }}</dd>
       <dt>Coverage</dt><dd>₹{{ p.coverageAmount }}</dd>
-      <dt>Nominee</dt><dd>{{ p.nomineeName }} ({{ p.nomineeRelationship }})</dd>
+      <dt>Nominee</dt><dd>{{ p.nomineeName || '—' }}<span *ngIf="p.nomineeRelationship"> ({{ p.nomineeRelationship }})</span></dd>
     </dl>
 
     <div class="actions" *ngIf="p.status === 'ACTIVE'">

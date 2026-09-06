@@ -15,7 +15,6 @@ export interface Policy {
   nomineeName?: string;
   nomineeRelationship?: string;
   nomineeContact?: string;
-  cancellationRequested?: boolean;
 }
 
 export interface PurchasePolicyRequest {
