@@ -40,6 +40,6 @@ export class ClaimService {
   }
 
   decide(id: number, decision: ClaimDecisionAction, remarks?: string): Observable<Claim> {
-    return this.http.put<Claim>(`${this.baseUrl}/${id}/decision`, { decision, remarks });
+    return this.http.put<Claim>(`${this.baseUrl}/${id}/decision`, { status: decision, remarks });
   }
 }
