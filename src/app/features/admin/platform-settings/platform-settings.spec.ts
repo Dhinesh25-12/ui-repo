@@ -50,6 +50,15 @@ describe('PlatformSettings', () => {
     expect(component.canSave(EDITABLE)).toBe(false);
   });
 
+  it('clears the loading state when the initial fetch fails', () => {
+    settingsServiceStub.getSettings.mockReturnValue(throwError(() => new Error('boom')));
+    const component = TestBed.createComponent(PlatformSettings).componentInstance;
+    component.ngOnInit();
+
+    expect(component.loading()).toBe(false);
+    expect(component.settings()).toEqual([]);
+  });
+
   it('coerces numeric input values to strings and enables saving when changed', () => {
     const component = createLoaded([EDITABLE]);
     component.onDraftChange(EDITABLE, 24);
