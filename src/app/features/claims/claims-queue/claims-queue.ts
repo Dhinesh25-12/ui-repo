@@ -1,11 +1,13 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ClaimService } from '../../../core/services/claim.service';
-import { Claim } from '../../../core/models/claim.model';
+import { Claim, ClaimStatus } from '../../../core/models/claim.model';
 import { LoadingSpinner } from '../../../shared/components/loading-spinner/loading-spinner';
 import { EmptyState } from '../../../shared/components/empty-state/empty-state';
 import { StatusBadge } from '../../../shared/components/status-badge/status-badge';
 import { NotificationService } from '../../../core/services/notification.service';
+
+const TERMINAL_STATUSES: ClaimStatus[] = ['APPROVED', 'REJECTED', 'SETTLED'];
 
 @Component({
   selector: 'app-claims-queue',
@@ -45,6 +47,10 @@ export class ClaimsQueue implements OnInit {
 
   reject(claim: Claim): void {
     this.decide(claim, 'REJECT');
+  }
+
+  isDecidable(claim: Claim): boolean {
+    return this.decidingId() !== claim.id && !TERMINAL_STATUSES.includes(claim.status);
   }
 
   private decide(claim: Claim, decision: 'APPROVE' | 'REJECT'): void {

@@ -14,6 +14,8 @@ interface NavItem {
   roles?: UserRole[];
 }
 
+const ALL_ROLES: UserRole[] = ['CUSTOMER', 'AGENT', 'CLAIMS_OFFICER', 'ADMIN'];
+
 @Component({
   selector: 'app-shell',
   standalone: true,
@@ -30,14 +32,14 @@ export class Shell {
   readonly userMenuOpen = signal(false);
 
   readonly navItems: NavItem[] = [
-    { label: 'Dashboard', path: '/dashboard', icon: '📊' },
+    { label: 'Dashboard', path: '/dashboard', icon: '📊', roles: ALL_ROLES },
     { label: 'Policies', path: '/policies', icon: '📄', roles: ['CUSTOMER', 'AGENT', 'ADMIN'] },
     { label: 'Claims', path: '/claims', icon: '🧾', roles: ['CUSTOMER', 'CLAIMS_OFFICER', 'ADMIN'] },
     { label: 'Payments', path: '/payments', icon: '💳', roles: ['CUSTOMER', 'ADMIN'] },
-    { label: 'My Profile', path: '/profile', icon: '👤' },
+    { label: 'My Profile', path: '/profile', icon: '👤', roles: ALL_ROLES },
     { label: 'Reports', path: '/reports', icon: '📈', roles: ['CUSTOMER', 'ADMIN'] },
-    { label: 'Messages', path: '/messages', icon: '✉️' },
-    { label: 'Support', path: '/support', icon: '🆘' },
+    { label: 'Messages', path: '/messages', icon: '✉️', roles: ALL_ROLES },
+    { label: 'Support', path: '/support', icon: '🆘', roles: ALL_ROLES },
     { label: 'User Management', path: '/admin/users', icon: '⚙️', roles: ['ADMIN'] }
   ];
 

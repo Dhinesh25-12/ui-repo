@@ -108,7 +108,13 @@ export class Dashboard implements OnInit {
   }
 
   activityDescription(activity: DashboardActivity): string | undefined {
-    return activity.description ?? (activity.title ? activity.message : undefined);
+    if (activity.description) {
+      return activity.description;
+    }
+    // `message` is only shown as a subtitle when a distinct `title` exists;
+    // otherwise it has already been used as the title (see activityTitle)
+    // and repeating it here would be redundant.
+    return activity.title && activity.message ? activity.message : undefined;
   }
 
   activityAmountLabel(activity: DashboardActivity): string | undefined {

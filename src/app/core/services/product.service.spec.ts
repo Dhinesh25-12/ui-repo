@@ -23,7 +23,7 @@ describe('ProductService', () => {
   it('compares products in a single request instead of one call per product', () => {
     service.compare([1, 2, 3]).subscribe();
 
-    const req = httpMock.expectOne(`${environment.apiBaseUrl}/products/compare?ids=1%2C2%2C3`);
+    const req = httpMock.expectOne(`${environment.apiBaseUrl}/products/compare?ids=1,2,3`);
     expect(req.request.method).toBe('GET');
     req.flush([]);
   });

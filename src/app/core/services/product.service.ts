@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Product, ProductRequest } from '../models/product.model';
@@ -27,9 +27,8 @@ export class ProductService {
 
   /** Compares multiple products in a single request instead of fetching them one by one. */
   compare(ids: number[]): Observable<Product[]> {
-    const query = new URLSearchParams();
-    query.set('ids', ids.join(','));
-    return this.http.get<Product[]>(`${this.baseUrl}/compare?${query.toString()}`);
+    const params = new HttpParams().set('ids', ids.join(','));
+    return this.http.get<Product[]>(`${this.baseUrl}/compare`, { params });
   }
 
   create(payload: ProductRequest): Observable<Product> {

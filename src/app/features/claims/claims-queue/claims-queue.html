@@ -17,14 +17,14 @@
         <td class="actions">
           <button
             class="approve"
-            [disabled]="decidingId() === claim.id || claim.status === 'APPROVED' || claim.status === 'SETTLED' || claim.status === 'REJECTED'"
+            [disabled]="!isDecidable(claim)"
             (click)="approve(claim)"
           >
             Approve
           </button>
           <button
             class="reject"
-            [disabled]="decidingId() === claim.id || claim.status === 'APPROVED' || claim.status === 'SETTLED' || claim.status === 'REJECTED'"
+            [disabled]="!isDecidable(claim)"
             (click)="reject(claim)"
           >
             Reject

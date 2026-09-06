@@ -8,6 +8,8 @@ import { NotificationService } from './notification.service';
 const TOKEN_KEY = 'ip_auth_token';
 const USER_KEY = 'ip_auth_user';
 const EXPIRES_AT_KEY = 'ip_auth_expires_at';
+/** setTimeout only supports a 32-bit signed delay; longer waits must be chunked. */
+const MAX_TIMEOUT_MS = 2_147_483_647;
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -95,6 +97,12 @@ export class AuthService {
 
   private scheduleAutoLogout(ms: number): void {
     this.clearLogoutTimer();
+    if (ms > MAX_TIMEOUT_MS) {
+      // setTimeout truncates delays beyond ~24.8 days; re-check after the max
+      // chunk and reschedule the remaining time instead of firing early.
+      this.logoutTimer = setTimeout(() => this.scheduleAutoLogoutFromStorage(), MAX_TIMEOUT_MS);
+      return;
+    }
     this.logoutTimer = setTimeout(() => {
       this.logout();
       this.notifications.info('Your session has expired. Please log in again.');
