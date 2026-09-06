@@ -12,5 +12,9 @@ export function downloadBlob(blob: Blob, fileName: string): void {
   document.body.appendChild(anchor);
   anchor.click();
   anchor.remove();
-  URL.revokeObjectURL(url);
+  // Revoking the object URL synchronously (or too soon) can abort the
+  // download before the browser has finished reading the blob, producing a
+  // truncated/corrupt file that downloads but won't open. Defer the revoke
+  // so the download has time to start.
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
