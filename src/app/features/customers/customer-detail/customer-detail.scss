@@ -1,0 +1,18 @@
+.back-link { display: inline-block; margin-bottom: 1rem; color: #2563eb; text-decoration: none; font-weight: 600; }
+.card { background: #fff; border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+.profile-card { max-width: 760px; }
+.title-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 1.25rem; }
+h1, h2 { margin: 0; }
+h1 { font-size: 1.4rem; }
+h2 { font-size: 1rem; color: #374151; margin-bottom: 0.75rem; }
+p { margin: 0.25rem 0 0; color: #6b7280; font-size: 0.9rem; }
+section + section { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid #f3f4f6; }
+dl { display: grid; grid-template-columns: 140px 1fr; gap: 0.45rem 1rem; margin: 0; }
+dt { color: #6b7280; font-size: 0.85rem; }
+dd { margin: 0; font-weight: 600; }
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th, .data-table td { padding: 0.7rem 1rem; border-bottom: 1px solid #f3f4f6; text-align: left; font-size: 0.88rem; }
+.data-table th { background: #f9fafb; }
+.error-state { background: #fff; border-radius: 12px; padding: 1.5rem; text-align: center; color: #dc2626; }
+button { border: none; border-radius: 8px; padding: 0.45rem 0.85rem; background: #2563eb; color: #fff; cursor: pointer; font-weight: 600; }
+.error-state button { margin-top: 0.75rem; }

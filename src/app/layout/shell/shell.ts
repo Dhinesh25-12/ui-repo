@@ -35,6 +35,7 @@ export class Shell {
   readonly navItems: NavItem[] = [
     { label: 'Dashboard', path: '/dashboard', icon: '📊', roles: ALL_ROLES },
     { label: 'Policies', path: '/policies', icon: '📄', roles: ['CUSTOMER', 'AGENT', 'ADMIN'] },
+    { label: 'Customers', path: '/customers', icon: '👥', roles: ['AGENT', 'ADMIN'] },
     { label: 'Claims', path: '/claims', icon: '🧾', roles: ['CUSTOMER', 'CLAIMS_OFFICER', 'ADMIN'] },
     { label: 'Payments', path: '/payments', icon: '💳', roles: ['CUSTOMER', 'ADMIN'] },
     { label: 'My Profile', path: '/profile', icon: '👤', roles: ALL_ROLES },

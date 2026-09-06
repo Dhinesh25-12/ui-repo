@@ -1,0 +1,88 @@
+<div class="customer-detail">
+  <a routerLink="/customers" class="back-link">&larr; Back to customers</a>
+  <app-loading-spinner *ngIf="loading()"></app-loading-spinner>
+
+  <div class="error-state" *ngIf="!loading() && errored()">
+    <p>Unable to load customer details.</p>
+    <button type="button" (click)="load()">Retry</button>
+  </div>
+
+  <ng-container *ngIf="!loading() && !errored() && customer() as c">
+    <div class="card profile-card">
+      <div class="title-row">
+        <div>
+          <h1>{{ valueOrDash(c.fullName) }}</h1>
+          <p>{{ valueOrDash(c.username) }} · {{ valueOrDash(c.email) }}</p>
+        </div>
+        <app-status-badge [status]="c.active ? 'ACTIVE' : 'INACTIVE'"></app-status-badge>
+      </div>
+
+      <section>
+        <h2>Profile</h2>
+        <dl>
+          <dt>First name</dt><dd>{{ valueOrDash(c.firstName) }}</dd>
+          <dt>Last name</dt><dd>{{ valueOrDash(c.lastName) }}</dd>
+          <dt>Phone</dt><dd>{{ valueOrDash(c.phone) }}</dd>
+          <dt>Date of birth</dt><dd>{{ valueOrDash(c.dateOfBirth) }}</dd>
+          <dt>Address</dt><dd>{{ valueOrDash(c.address) }}</dd>
+          <dt>City</dt><dd>{{ valueOrDash(c.city) }}</dd>
+          <dt>State</dt><dd>{{ valueOrDash(c.state) }}</dd>
+          <dt>Postal code</dt><dd>{{ valueOrDash(c.postalCode) }}</dd>
+        </dl>
+      </section>
+
+      <section>
+        <h2>KYC</h2>
+        <dl>
+          <dt>ID type</dt><dd>{{ valueOrDash(c.kycIdType) }}</dd>
+          <dt>ID number</dt><dd>{{ valueOrDash(c.kycIdNumber) }}</dd>
+        </dl>
+      </section>
+    </div>
+
+    <section class="card">
+      <h2>Policies</h2>
+      <app-empty-state
+        *ngIf="policies().length === 0"
+        icon="📄"
+        title="No policies found"
+      ></app-empty-state>
+      <table class="data-table" *ngIf="policies().length">
+        <thead>
+          <tr><th>Policy #</th><th>Product</th><th>End date</th><th>Premium</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let policy of policies()">
+            <td>{{ policy.policyNumber }}</td>
+            <td>{{ policy.productName }}</td>
+            <td>{{ policy.endDate }}</td>
+            <td>₹{{ policy.premiumAmount }}</td>
+            <td><app-status-badge [status]="policy.status"></app-status-badge></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>Claims</h2>
+      <app-empty-state
+        *ngIf="claims().length === 0"
+        icon="🧾"
+        title="No claims found"
+      ></app-empty-state>
+      <table class="data-table" *ngIf="claims().length">
+        <thead>
+          <tr><th>Claim #</th><th>Policy #</th><th>Incident date</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let claim of claims()">
+            <td>{{ claim.claimNumber }}</td>
+            <td>{{ claim.policyNumber }}</td>
+            <td>{{ claim.incidentDate }}</td>
+            <td><app-status-badge [status]="claim.status"></app-status-badge></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </ng-container>
+</div>
