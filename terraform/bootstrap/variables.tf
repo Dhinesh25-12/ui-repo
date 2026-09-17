@@ -7,11 +7,11 @@ variable "aws_region" {
 variable "state_bucket_name" {
   description = "Globally unique name for the S3 bucket used to store Terraform state"
   type        = string
-  default     = "insurance-portal-terraform-state"
+  default     = "insurance-portal-ui-terraform-state"
 }
 
 variable "lock_table_name" {
   description = "Name of the DynamoDB table used for Terraform state locking"
   type        = string
-  default     = "insurance-portal-terraform-locks"
+  default     = "insurance-portal-ui-terraform-locks"
 }

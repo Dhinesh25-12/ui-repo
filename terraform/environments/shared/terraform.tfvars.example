@@ -1,0 +1,28 @@
+# Example variable values for the shared-stack ("Option B") environment.
+# Copy to terraform.tfvars and adjust as needed:
+#   cp terraform.tfvars.example terraform.tfvars
+
+aws_region   = "us-east-1"
+project_name = "insurance-portal"
+environment  = "dev"
+
+# Point these at backend-repo's actual Terraform state backend
+# (see backend-repo/terraform/environments/dev/backend.hcl.example).
+backend_state_bucket = "insurance-portal-tfstate"
+backend_state_key    = "dev/terraform.tfstate"
+backend_state_region = "us-east-1"
+
+# Adjust these if backend-repo's output names differ.
+backend_vpc_id_output             = "vpc_id"
+backend_subnet_ids_output         = "public_subnet_ids"
+backend_security_group_id_output  = "web_security_group_id"
+
+instance_count = 1
+instance_type  = "t3.micro"
+key_name       = null
+
+deployment_key_prefix = "insurance-portal"
+
+tags = {
+  Owner = "platform-team"
+}
