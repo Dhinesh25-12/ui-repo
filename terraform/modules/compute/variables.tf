@@ -55,7 +55,31 @@ variable "root_volume_size" {
 }
 
 variable "user_data" {
-  description = "User data script to run on instance boot"
+  description = "User data script to run on instance boot. Takes precedence over the built-in nginx deployment script when set"
+  type        = string
+  default     = null
+}
+
+variable "enable_nginx_deployment" {
+  description = "Whether to render the built-in user_data script that installs nginx and serves the Angular build synced from deployment_bucket. Ignored if user_data is set"
+  type        = bool
+  default     = false
+}
+
+variable "deployment_bucket" {
+  description = "Name of the S3 bucket the CI workflow publishes the Angular build to. Required when enable_nginx_deployment is true"
+  type        = string
+  default     = null
+}
+
+variable "deployment_key_prefix" {
+  description = "S3 key prefix (folder) under deployment_bucket where the Angular build is published"
+  type        = string
+  default     = "insurance-portal"
+}
+
+variable "iam_instance_profile" {
+  description = "Name of an IAM instance profile to attach (e.g. one granting s3:GetObject/s3:ListBucket on deployment_bucket for the nginx deployment script)"
   type        = string
   default     = null
 }

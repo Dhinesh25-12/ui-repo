@@ -1,0 +1,52 @@
+name: Build & Deploy UI
+
+# Builds the Angular production bundle and publishes it to the S3
+# deployment bucket that the EC2 instances (terraform/environments/shared)
+# sync from via the nginx user_data script in terraform/modules/compute.
+#
+# Required repository configuration:
+#   secrets.AWS_ROLE_TO_ASSUME   - IAM role ARN this workflow assumes (OIDC)
+#   vars.AWS_REGION              - AWS region, e.g. us-east-1
+#   vars.DEPLOYMENT_BUCKET       - name of the S3 deployment bucket
+#                                  (terraform output: deployment_bucket_name)
+#   vars.DEPLOYMENT_KEY_PREFIX   - S3 key prefix, e.g. insurance-portal
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build production bundle
+        run: npm run build -- --configuration production
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Publish build to S3
+        # The @angular/build:application builder outputs the static site
+        # under dist/insurance-portal/browser.
+        run: |
+          aws s3 sync dist/insurance-portal/browser "s3://${{ vars.DEPLOYMENT_BUCKET }}/${{ vars.DEPLOYMENT_KEY_PREFIX }}" --delete
